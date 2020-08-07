@@ -80,14 +80,21 @@ const generateOffers = (count) => (
 
 module.exports = {
   name: `--generate`,
-  async run(args) {
+  run(args) {
     const [count] = args;
-    const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
+    let countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
+
+    if (countOffer < 1) {
+      countOffer = DEFAULT_COUNT;
+    } else if (countOffer > 1000) {
+      console.error(chalk.red(`Не больше 1000 объявлений`));
+      return;
+    }
     const content = JSON.stringify(generateOffers(countOffer));
 
     fs.writeFile(FILE_NAME, content, (err) => {
       if (err) {
-        return console.error(`Can't write data to file...`);
+        return console.error(chalk.red(`Can't write data to file...`));
       }
 
       return console.info(`Operation success. File created.`);
