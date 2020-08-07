@@ -4,9 +4,9 @@ const {
   getRandomInt,
   shuffle,
 } = require(`../../utils`);
-
 const fs = require(`fs`);
 const chalk = require(`chalk`);
+const {ExitCode} = require(`../../constants`);
 
 const DEFAULT_COUNT = 1;
 const FILE_NAME = `mocks.json`;
@@ -88,16 +88,18 @@ module.exports = {
       countOffer = DEFAULT_COUNT;
     } else if (countOffer > 1000) {
       console.error(chalk.red(`Не больше 1000 объявлений`));
-      return;
+      process.exit(ExitCode.error);
     }
     const content = JSON.stringify(generateOffers(countOffer));
 
     fs.writeFile(FILE_NAME, content, (err) => {
       if (err) {
-        return console.error(chalk.red(`Can't write data to file...`));
+        console.error(chalk.red(`Can't write data to file...`));
+        process.exit(ExitCode.error);
       }
 
-      return console.info(`Operation success. File created.`);
+      console.info(`Operation success. File created.`);
+      process.exit(ExitCode.success);
     });
   }
 };
