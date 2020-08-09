@@ -6,12 +6,14 @@
   "dependencies": {},
   "devDependencies": {
     "eslint": "7.6.0",
-    "eslint-config-htmlacademy": "0.5.2"
+    "eslint-config-htmlacademy": "0.5.2",
+    "nodemon": "2.0.4"
   },
   "scripts": {
     "test": "npm run eslint",
     "eslint": "eslint --ext .js src/",
-    "start": "node ./src/service/service.js"
+    "start": "node ./src/service/service.js",
+    "server": "nodemon ./src/service/service.js --server 3000"
   },
   "repository": {
     "type": "git",
