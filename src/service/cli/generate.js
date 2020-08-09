@@ -9,6 +9,7 @@ const chalk = require(`chalk`);
 const {
   ExitCode
 } = require(`../../constants`);
+const os = require(`os`);
 
 const DEFAULT_COUNT = 1;
 const FILE_NAME = `mocks.json`;
@@ -38,7 +39,7 @@ const getPictureFileName = (number) => `item${number.toString().padStart(2, 0)}.
 const readContent = async (filePath) => {
   try {
     const content = await fs.readFile(filePath, `utf8`);
-    return content.split(`\r\n`);
+    return content.split(os.EOL);
   } catch (error) {
     console.error(chalk.red(error));
     return [];
