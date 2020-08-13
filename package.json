@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Куплю. Продам",
   "main": "./src/service/service.js",
-  "dependencies": {},
+  "dependencies": {
+    "express": "4.17.1"
+  },
   "devDependencies": {
     "eslint": "7.6.0",
     "eslint-config-htmlacademy": "0.5.2",
@@ -12,8 +14,9 @@
   "scripts": {
     "test": "npm run eslint",
     "eslint": "eslint --ext .js src/",
-    "start": "node ./src/service/service.js",
-    "server": "nodemon ./src/service/service.js --server 3000"
+    "start": "nodemon ./src/service/service.js",
+    "server": "nodemon ./src/service/service.js --server 3000",
+    "start-front-server": "nodemon ./src/express/index.js"
   },
   "repository": {
     "type": "git",
