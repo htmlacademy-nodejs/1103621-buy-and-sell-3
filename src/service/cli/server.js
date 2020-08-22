@@ -21,6 +21,7 @@ app.use((req, res) => res
 
 module.exports = {
   name: `--server`,
+  server: app,
   run(args) {
     const [customPort] = args;
     const port = Number.parseInt(customPort, 10) || DEFAULT_PORT;
