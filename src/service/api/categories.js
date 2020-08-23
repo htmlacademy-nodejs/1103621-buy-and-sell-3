@@ -7,12 +7,12 @@ const {
   HttpCode
 } = require(`../../constants`);
 
-const route = new Router();
+const router = new Router();
 
 module.exports = (app, service) => {
-  app.use(`/categories`, route);
+  app.use(`/categories`, router);
 
-  route.get(`/`, (req, res) => {
+  router.get(`/`, (req, res) => {
     const categories = service.findAll();
 
     res.status(HttpCode.OK)

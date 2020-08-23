@@ -8,44 +8,32 @@ const {
   commentValidator
 } = require(`../middlewares`);
 
-const route = new Router();
+const router = new Router();
 
 module.exports = (app, offerService, commentService) => {
-  app.use(`/offers`, route);
+  app.use(`/offers`, router);
 
-  route.get(`/`, (req, res) => {
+  router.get(`/`, (req, res) => {
     const offers = offerService.findAll();
     res.status(HttpCode.OK).json(offers);
   });
 
-  route.get(`/:offerId`, (req, res) => {
-    const {offerId} = req.params;
-    const offer = offerService.findOne(offerId);
-
-    if (!offer) {
-      return res.status(HttpCode.NOT_FOUND)
-        .send(`Offer with id ${offerId} is not found!`);
-    }
+  router.get(`/:offerId`, offerExists(offerService), (req, res) => {
+    const {offer} = res.locals;
 
     return res.status(HttpCode.OK)
       .json(offer);
   });
 
-  route.post(`/`, offerValidator, (req, res) => {
+  router.post(`/`, offerValidator, (req, res) => {
     const newOffer = offerService.create(req.body);
 
     return res.status(HttpCode.CREATED)
       .json(newOffer);
   });
 
-  route.put(`/:offerId`, offerValidator, (req, res) => {
+  router.put(`/:offerId`, [offerValidator, offerExists(offerService)], (req, res) => {
     const {offerId} = req.params;
-    const existingOffer = offerService.findOne(offerId);
-
-    if (!existingOffer) {
-      return res.status(HttpCode.NOT_FOUND)
-        .send(`Offer with id ${offerId} is not found!`);
-    }
 
     const updatedOffer = offerService.update(offerId, req.body);
 
@@ -53,7 +41,7 @@ module.exports = (app, offerService, commentService) => {
       .json(updatedOffer);
   });
 
-  route.delete(`/:offerId`, (req, res) => {
+  router.delete(`/:offerId`, (req, res) => {
     const {offerId} = req.params;
     const deletedOffer = offerService.drop(offerId);
 
@@ -66,7 +54,7 @@ module.exports = (app, offerService, commentService) => {
       .json(deletedOffer);
   });
 
-  route.get(`/:offerId/comments`, offerExists(offerService), (req, res) => {
+  router.get(`/:offerId/comments`, offerExists(offerService), (req, res) => {
     const {offer} = res.locals;
     const comments = commentService.findAll(offer);
 
@@ -74,7 +62,7 @@ module.exports = (app, offerService, commentService) => {
       .json(comments);
   });
 
-  route.delete(`/:offerId/comments/:commentId`, offerExists(offerService), (req, res) => {
+  router.delete(`/:offerId/comments/:commentId`, offerExists(offerService), (req, res) => {
     const {offer} = res.locals;
     const {commentId} = req.params;
     const deletedComment = commentService.drop(offer, commentId);
@@ -88,7 +76,7 @@ module.exports = (app, offerService, commentService) => {
       .json(deletedComment);
   });
 
-  route.post(`/:offerId/comments`, [offerExists(offerService), commentValidator], (req, res) => {
+  router.post(`/:offerId/comments`, [offerExists(offerService), commentValidator], (req, res) => {
     const {offer} = res.locals;
     const newComment = commentService.create(offer, req.body);
 

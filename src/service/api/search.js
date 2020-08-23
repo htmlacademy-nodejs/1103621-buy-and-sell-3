@@ -3,12 +3,12 @@
 const {Router} = require(`express`);
 const {HttpCode} = require(`../../constants`);
 
-const route = new Router();
+const router = new Router();
 
 module.exports = (app, service) => {
-  app.use(`/search`, route);
+  app.use(`/search`, router);
 
-  route.get(`/`, (req, res) => {
+  router.get(`/`, (req, res) => {
     const {query} = req.query;
 
     if (!query) {
