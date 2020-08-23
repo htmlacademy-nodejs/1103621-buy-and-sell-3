@@ -18,14 +18,8 @@ module.exports = (app, offerService, commentService) => {
     res.status(HttpCode.OK).json(offers);
   });
 
-  route.get(`/:offerId`, (req, res) => {
-    const {offerId} = req.params;
-    const offer = offerService.findOne(offerId);
-
-    if (!offer) {
-      return res.status(HttpCode.NOT_FOUND)
-        .send(`Offer with id ${offerId} is not found!`);
-    }
+  route.get(`/:offerId`, offerExists(offerService), (req, res) => {
+    const {offer} = res.locals;
 
     return res.status(HttpCode.OK)
       .json(offer);
@@ -38,14 +32,8 @@ module.exports = (app, offerService, commentService) => {
       .json(newOffer);
   });
 
-  route.put(`/:offerId`, offerValidator, (req, res) => {
+  route.put(`/:offerId`, [offerValidator, offerExists(offerService)], (req, res) => {
     const {offerId} = req.params;
-    const existingOffer = offerService.findOne(offerId);
-
-    if (!existingOffer) {
-      return res.status(HttpCode.NOT_FOUND)
-        .send(`Offer with id ${offerId} is not found!`);
-    }
 
     const updatedOffer = offerService.update(offerId, req.body);
 
