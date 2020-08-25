@@ -1,15 +1,18 @@
 'use strict';
 
 const request = require(`supertest`);
-const {
-  server
-} = require(`../cli/server`);
+const {init} = require(`../cli/server`);
+let server;
+let data;
+let existingOffer;
 const getMockData = require(`../lib/get-mock-data`);
 
 describe(`Offers API end-points`, () => {
-  const data = getMockData();
-
-  let existingOffer = data[0];
+  beforeAll(async () => {
+    server = await init();
+    data = await getMockData();
+    existingOffer = data[0];
+  }); 
 
   const falseCommentId = `8nikmas8`;
 

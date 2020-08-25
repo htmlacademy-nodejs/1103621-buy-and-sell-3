@@ -8,6 +8,9 @@ const {
   commentValidator
 } = require(`../middlewares`);
 
+const {getLogger} = require(`../../logger/logger`);
+const logger = getLogger();
+
 const router = new Router();
 
 module.exports = (app, offerService, commentService) => {
@@ -16,20 +19,26 @@ module.exports = (app, offerService, commentService) => {
   router.get(`/`, (req, res) => {
     const offers = offerService.findAll();
     res.status(HttpCode.OK).json(offers);
+
+    logger.info(`End request with status code ${res.statusCode}`);
   });
 
   router.get(`/:offerId`, offerExists(offerService), (req, res) => {
     const {offer} = res.locals;
 
-    return res.status(HttpCode.OK)
+    res.status(HttpCode.OK)
       .json(offer);
+
+    logger.info(`End request with status code ${res.statusCode}`);
   });
 
   router.post(`/`, offerValidator, (req, res) => {
     const newOffer = offerService.create(req.body);
 
-    return res.status(HttpCode.CREATED)
+    res.status(HttpCode.CREATED)
       .json(newOffer);
+
+    logger.info(`End request with status code ${res.statusCode}`);
   });
 
   router.put(`/:offerId`, [offerValidator, offerExists(offerService)], (req, res) => {
@@ -37,8 +46,10 @@ module.exports = (app, offerService, commentService) => {
 
     const updatedOffer = offerService.update(offerId, req.body);
 
-    return res.status(HttpCode.OK)
+    res.status(HttpCode.OK)
       .json(updatedOffer);
+
+    logger.info(`End request with status code ${res.statusCode}`);
   });
 
   router.delete(`/:offerId`, (req, res) => {
@@ -46,20 +57,28 @@ module.exports = (app, offerService, commentService) => {
     const deletedOffer = offerService.drop(offerId);
 
     if (!deletedOffer) {
-      return res.status(HttpCode.NOT_FOUND)
+      res.status(HttpCode.NOT_FOUND)
         .send(`Offer with id ${offerId} is not found!`);
+
+      logger.info(`End request with status code ${res.statusCode}`);
+
+      return;
     }
 
-    return res.status(HttpCode.OK)
+    res.status(HttpCode.OK)
       .json(deletedOffer);
+
+    logger.info(`End request with status code ${res.statusCode}`);
   });
 
   router.get(`/:offerId/comments`, offerExists(offerService), (req, res) => {
     const {offer} = res.locals;
     const comments = commentService.findAll(offer);
 
-    return res.status(HttpCode.OK)
+    res.status(HttpCode.OK)
       .json(comments);
+
+    logger.info(`End request with status code ${res.statusCode}`);
   });
 
   router.delete(`/:offerId/comments/:commentId`, offerExists(offerService), (req, res) => {
@@ -68,20 +87,28 @@ module.exports = (app, offerService, commentService) => {
     const deletedComment = commentService.drop(offer, commentId);
 
     if (!deletedComment) {
-      return res.status(HttpCode.NOT_FOUND)
+      res.status(HttpCode.NOT_FOUND)
         .send(`Comment with id ${commentId} is not found!`);
+
+      logger.info(`End request with status code ${res.statusCode}`);
+
+      return;
     }
 
-    return res.status(HttpCode.OK)
+    res.status(HttpCode.OK)
       .json(deletedComment);
+
+    logger.info(`End request with status code ${res.statusCode}`);
   });
 
   router.post(`/:offerId/comments`, [offerExists(offerService), commentValidator], (req, res) => {
     const {offer} = res.locals;
     const newComment = commentService.create(offer, req.body);
 
-    return res.status(HttpCode.CREATED)
+    res.status(HttpCode.CREATED)
       .json(newComment);
+
+    logger.info(`End request with status code ${res.statusCode}`);
   });
 
 };

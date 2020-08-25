@@ -18,11 +18,14 @@ const {
 
 const app = new Router();
 
-const mockData = getMockData();
+const init = async () => {
+  const mockData = await getMockData();
 
-category(app, new CategoryService(mockData));
-search(app, new SearchService(mockData));
-offer(app, new OfferService(mockData), new CommentService());
+  category(app, new CategoryService(mockData));
+  search(app, new SearchService(mockData));
+  offer(app, new OfferService(mockData), new CommentService());
 
+  return app;
+};
 
-module.exports = app;
+module.exports = init;
