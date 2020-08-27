@@ -23,7 +23,7 @@
     "test::rest": "jest .e2e.test.js",
     "eslint": "eslint --ext .js src/",
     "start": "cross-env LOG_LEVEL=error nodemon ./src/service/service.js --server 3000",
-    "start::debug": "cross-env LOG_LEVEL=debug nodemon ./src/service/service.js --server 3000 | ./node_modules/.bin/pino-pretty",
+    "start::debug": "cross-env LOG_LEVEL=debug nodemon ./src/service/service.js --server 3000",
     "server": "nodemon ./src/service/service.js --server 3000",
     "start-front-server": "nodemon ./src/express/index.js"
   },

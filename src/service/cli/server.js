@@ -1,6 +1,5 @@
 'use strict';
 
-const chalk = require(`chalk`);
 const {
   HttpCode,
   API_PREFIX
