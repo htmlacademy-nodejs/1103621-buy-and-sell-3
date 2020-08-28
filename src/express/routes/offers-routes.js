@@ -3,7 +3,11 @@
 const {
   Router
 } = require(`express`);
+const express = require(`express`);
+
 const offersRouter = new Router();
+offersRouter.use(express.urlencoded({extended: false}));
+
 const axios = require(`axios`);
 const PATH_TO_SERVICE = `http://localhost:3000`;
 
@@ -23,5 +27,8 @@ offersRouter.get(`/edit/:id`, async (req, res) => {
 });
 
 offersRouter.get(`/:id`, (req, res) => res.render(`tickets/ticket`));
+offersRouter.post(`/add`, (req, res) => {
+  console.log(req.body);
+});
 
 module.exports = offersRouter;
