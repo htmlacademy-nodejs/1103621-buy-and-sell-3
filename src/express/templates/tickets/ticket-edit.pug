@@ -9,7 +9,7 @@ block content
         form.ticket-form__form.form(action='#', method='post', enctype='multipart/form-data', autocomplete='off')
           .ticket-form__avatar-container.js-preview-container.uploaded
             .ticket-form__avatar.js-preview
-              img(src='/img/item02.jpg', srcset='/img/item02@2x.jpg 2x', alt='')
+              img(src=`/img/${offerForEditing.picture}`, srcset=`/img/${offerForEditing.picture.replace(/\..*/, ``)}@2x.jpg 2x`, alt='')
             .ticket-form__field-avatar
               input#avatar.visually-hidden.js-file-field(type='file', name='avatar')
               label(for='avatar')
@@ -18,31 +18,73 @@ block content
           .ticket-form__content
             .ticket-form__row
               .form__field
-                input#ticket-name.js-field(type='text', name='ticket-name', value='Мое старое кресло', required='')
+                input#ticket-name.js-field(type='text', name='ticket-name', value=`${offerForEditing.title}`, required='')
                 label(for='ticket-name') Название
                 span Обязательное поле
             .ticket-form__row
               .form__field
                 textarea#comment-field.js-field(name='comment', cols='30', rows='10', maxlength='400', minlength='50')
-                  | Продам свое старое кресло, чтобы сидеть и читать книги зимними вечерами. Ножки мягкие, мой пол не царапают.
+                  | #{offerForEditing.description}
                 label(for='comment-field') Описание
                 span Обязательное поле
             .ticket-form__row
               select#category-field.form__select.js-multiple-select(name='category', data-label='Выбрать категорию публикации', multiple='')
-                option(value='1', selected='') Дом
-                option(value='2', selected='') Спорт и отдых
-                option(value='3') Авто
-                option(value='4') Электроника
+                if offerForEditing.category.includes(`Книги`) 
+                  option(value='1', selected='') Книги
+                else 
+                  option(value='1') Книги
+
+                if offerForEditing.category.includes(`Разное`) 
+                  option(value='2', selected='') Разное
+                else 
+                  option(value='2') Разное
+
+                if offerForEditing.category.includes(`Посуда`) 
+                  option(value='3', selected='') Посуда
+                else 
+                  option(value='3') Посуда
+
+                if offerForEditing.category.includes(`Игры`) 
+                  option(value='4', selected='') Игры
+                else 
+                  option(value='4') Игры
+
+                if offerForEditing.category.includes(`Животные`) 
+                  option(value='5', selected='') Животные
+                else 
+                  option(value='5') Животные
+
+                if offerForEditing.category.includes(`Журналы`) 
+                  option(value='6', selected='') Журналы
+                else 
+                  option(value='6') Журналы
+
+                if offerForEditing.category.includes(`Цветы`) 
+                  option(value='7', selected='') Цветы
+                else 
+                  option(value='7') Цветы
+
+                if offerForEditing.category.includes(`Марки`) 
+                  option(value='8', selected='') Марки
+                else 
+                  option(value='8') Марки
+                
             .ticket-form__row
               .form__field.form__field--price
-                input#price-field.js-field.js-price(type='number', name='price', min='1', value='4000', required='')
+                input#price-field.js-field.js-price(type='number', name='price', min='1', value=`${offerForEditing.sum}`, required='')
                 label(for='price-field') Цена
                 span Обязательное поле
               .form__switch.switch
                 .switch__item
-                  input#buy-field.visually-hidden(type='radio', name='action', value='buy', checked='')
+                  if offerForEditing.type === `OFFER`
+                    input#buy-field.visually-hidden(type='radio', name='action', value='buy', checked='')
+                  else 
+                    input#buy-field.visually-hidden(type='radio', name='action', value='buy')
                   label.switch__button(for='buy-field') Куплю
                 .switch__item
-                  input#sell-field.visually-hidden(type='radio', name='action', value='sell')
+                  if offerForEditing.type === `SALE`
+                    input#sell-field.visually-hidden(type='radio', name='action', value='sell', checked='')
+                  else 
+                    input#sell-field.visually-hidden(type='radio', name='action', value='sell')
                   label.switch__button(for='sell-field') Продам
           button.form__button.btn.btn--medium.js-button(type='submit') Сохранить

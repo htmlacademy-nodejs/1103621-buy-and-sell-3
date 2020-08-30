@@ -39,7 +39,7 @@ const PictureRestrict = {
   MAX: 16,
 };
 
-const getPictureFileName = (number) => `item${number.toString().padStart(2, 0)}`;
+const getPictureFileName = (number) => `item${number.toString().padStart(2, 0)}.jpg`;
 
 const readContent = async (filePath) => {
   try {
