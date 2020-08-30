@@ -12,24 +12,10 @@ const getAllOffers = async () => {
   return serviceResp.data;
 };
 
-const getOfferComments = async (id) => {
-  const comments = await axios.get(`${PATH_TO_SERVICE}/api/offers/${id}/comments`);
-  return comments;
-};
+const getFirstTwoOffers = async () => {
+  const firstThreeArticles = await getAllOffers();
 
-const getFirstTwoOffersComments = async () => {
-  const firstTwoOffers = await getAllOffers().slice(0, 2);
-
-  const firstOfferID = firstTwoOffers[0];
-  const secondOfferID = firstTwoOffers[1];
-
-  const firstOfferComments = await getOfferComments(firstOfferID);
-  const secondOfferComments = await getOfferComments(secondOfferID);
-
-  return {
-    firstOfferComments,
-    secondOfferComments
-  };
+  return firstThreeArticles.slice(0, 2);
 };
 
 myRouter.get(`/`, async (req, res) => {
@@ -39,10 +25,9 @@ myRouter.get(`/`, async (req, res) => {
   });
 });
 myRouter.get(`/comments`, async (req, res) => {
-  const {firstOfferComments, secondOfferComments} = getFirstTwoOffersComments();
+  const offers = await getFirstTwoOffers();
   res.render(`comments`, {
-    firstOfferComments,
-    secondOfferComments
+    offers
   });
 });
 
