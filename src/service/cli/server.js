@@ -51,5 +51,6 @@ module.exports = {
         logger.error(`Error: ${err}`);
         process.exit(1);
       });
+
   }
 };

@@ -16,11 +16,14 @@ module.exports = (app, service) => {
   app.use(`/categories`, router);
 
   router.get(`/`, (req, res) => {
+
     const categories = service.findAll();
 
     res.status(HttpCode.OK)
       .json(categories);
 
+
     logger.info(`End request with status code ${res.statusCode}`);
+
   });
 };
