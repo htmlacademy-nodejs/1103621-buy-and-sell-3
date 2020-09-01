@@ -3,17 +3,24 @@
 const {Router} = require(`express`);
 const {HttpCode} = require(`../../constants`);
 
-const route = new Router();
+const {getLogger} = require(`../../logger/logger`);
+const logger = getLogger();
+
+const router = new Router();
 
 module.exports = (app, service) => {
-  app.use(`/search`, route);
+  app.use(`/search`, router);
 
-  route.get(`/`, (req, res) => {
+  router.get(`/`, (req, res) => {
     const {query} = req.query;
 
     if (!query) {
       res.status(HttpCode.BAD_REQUEST)
         .json([]);
+
+      logger.info(`End request with status code ${res.statusCode}`);
+
+      return;
     }
 
     const searchResults = service.findAll(query);
@@ -21,5 +28,7 @@ module.exports = (app, service) => {
 
     res.status(searchStatus)
       .json(searchResults);
+
+    logger.info(`End request with status code ${res.statusCode}`);
   });
 };
