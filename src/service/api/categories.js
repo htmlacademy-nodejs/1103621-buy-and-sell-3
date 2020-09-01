@@ -7,9 +7,6 @@ const {
   HttpCode
 } = require(`../../constants`);
 
-const {getLogger} = require(`../../logger/logger`);
-const logger = getLogger();
-
 const router = new Router();
 
 module.exports = (app, service) => {
@@ -20,7 +17,5 @@ module.exports = (app, service) => {
 
     res.status(HttpCode.OK)
       .json(categories);
-
-    logger.info(`End request with status code ${res.statusCode}`);
   });
 };
