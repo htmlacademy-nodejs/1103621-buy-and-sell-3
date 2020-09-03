@@ -29,46 +29,11 @@ block content
                 span Обязательное поле
             .ticket-form__row
               select#category-field.form__select.js-multiple-select(name='category', data-label='Выбрать категорию публикации', multiple='')
-                if offerForEditing.category.includes(`Книги`) 
-                  option(value='1', selected='') Книги
-                else 
-                  option(value='1') Книги
-
-                if offerForEditing.category.includes(`Разное`) 
-                  option(value='2', selected='') Разное
-                else 
-                  option(value='2') Разное
-
-                if offerForEditing.category.includes(`Посуда`) 
-                  option(value='3', selected='') Посуда
-                else 
-                  option(value='3') Посуда
-
-                if offerForEditing.category.includes(`Игры`) 
-                  option(value='4', selected='') Игры
-                else 
-                  option(value='4') Игры
-
-                if offerForEditing.category.includes(`Животные`) 
-                  option(value='5', selected='') Животные
-                else 
-                  option(value='5') Животные
-
-                if offerForEditing.category.includes(`Журналы`) 
-                  option(value='6', selected='') Журналы
-                else 
-                  option(value='6') Журналы
-
-                if offerForEditing.category.includes(`Цветы`) 
-                  option(value='7', selected='') Цветы
-                else 
-                  option(value='7') Цветы
-
-                if offerForEditing.category.includes(`Марки`) 
-                  option(value='8', selected='') Марки
-                else 
-                  option(value='8') Марки
-                
+                each category in fields.allCategories
+                  if fields && fields.hasOwnProperty(`category`) && fields.category.includes(`${category}`) 
+                    option(value='Книги', selected='') #{category}
+                  else 
+                    option(value='Книги') #{category}             
             .ticket-form__row
               .form__field.form__field--price
                 input#price-field.js-field.js-price(type='number', name='price', min='1', value=`${offerForEditing.sum}`, required='')

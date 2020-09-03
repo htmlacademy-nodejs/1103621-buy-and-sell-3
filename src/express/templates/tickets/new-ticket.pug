@@ -30,46 +30,12 @@ block content
                 label(for='comment-field') Описание
                 span Обязательное поле
             .ticket-form__row
-              select#category-field.form__select.js-multiple-select(name='category', data-label='Выбрать категорию публикации')
-                if fields && fields.hasOwnProperty(`category`) && fields.category.includes(`Книги`) 
-                  option(value='Книги', selected='') Книги
-                else 
-                  option(value='Книги') Книги
-
-                if fields && fields.hasOwnProperty(`category`) && fields.category.includes(`Разное`) 
-                  option(value='Разное', selected='') Разное
-                else 
-                  option(value='Разное') Разное
-
-                if fields && fields.hasOwnProperty(`category`) && fields.category.includes(`Посуда`) 
-                  option(value='Посуда', selected='') Посуда
-                else 
-                  option(value='Посуда') Посуда
-
-                if fields && fields.hasOwnProperty(`category`) && fields.category.includes(`Игры`) 
-                  option(value='Игры', selected='') Игры
-                else 
-                  option(value='Игры') Игры
-
-                if fields && fields.hasOwnProperty(`category`) && fields.category.includes(`Животные`) 
-                  option(value='Животные', selected='') Животные
-                else 
-                  option(value='Животные') Животные
-
-                if fields && fields.hasOwnProperty(`category`) && fields.category.includes(`Журналы`) 
-                  option(value='Журналы', selected='') Журналы
-                else 
-                  option(value='Журналы') Журналы
-
-                if fields && fields.hasOwnProperty(`category`) && fields.category.includes(`Цветы`) 
-                  option(value='Цветы', selected='') Цветы
-                else 
-                  option(value='Цветы') Цветы
-
-                if fields && fields.hasOwnProperty(`category`) && fields.category.includes(`Марки`) 
-                  option(value='Марки', selected='') Марки
-                else 
-                  option(value='Марки') Марки
+              select#category-field.form__select.js-multiple-select(name='category', data-label='Выбрать категорию публикации', multiple)
+                each category in fields.allCategories
+                  if fields && fields.hasOwnProperty(`category`) && fields.category.includes(`${category}`) 
+                    option(value='Книги', selected='') #{category}
+                  else 
+                    option(value='Книги') #{category}
             .ticket-form__row
               .form__field.form__field--price
                 input#price-field.js-field.js-price(type='number', name='price', min='1', required='', value=`${fields && fields.hasOwnProperty(`price`) ? fields.price : ``}`)

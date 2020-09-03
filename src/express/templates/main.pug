@@ -9,10 +9,9 @@ block content
       .tickets-list__header
         p.tickets-list__title Самое свежее
       ul 
-        - var i = 1
-        each offer in offersForTheNewest
+        each offer, i in offersForTheNewest
           li.tickets-list__item
-            div(class=`ticket-card ticket-card--color0${i++}`)
+            div(class=`ticket-card ticket-card--color0${i}`)
               .ticket-card__img
                 img(src=`img/${offer.picture}`, srcset=`img/${offer.picture.replace(/\..*/, ``)}@2x.jpg 2x`, alt='Изображение товара')
               .ticket-card__info
@@ -37,10 +36,9 @@ block content
       .tickets-list__header
         p.tickets-list__title Самые обсуждаемые
       ul
-        - var j = 1
-        each offer in offersForTheMostDiscussed
+        each offer, i in offersForTheMostDiscussed
           li.tickets-list__item
-            div(class=`ticket-card ticket-card--color0${j++}`)
+            div(class=`ticket-card ticket-card--color0${i}`)
               .ticket-card__img
                 img(src=`img/${offer.picture}`, srcset=`img/${offer.picture.replace(/\..*/, ``)}@2x.jpg 2x`, alt='Изображение товара')
               .ticket-card__info
