@@ -19,7 +19,7 @@ app.set(`view engine`, `pug`);
 app.use(formidableMiddleware({
   encoding: `utf-8`,
   uploadDir: `./tmp`,
-  multiples: false,
+  multiples: true,
 }));
 app.use(express.static(path.resolve(__dirname, PUBLIC_DIR)));
 

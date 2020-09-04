@@ -30,7 +30,7 @@ block content
                 label(for='comment-field') Описание
                 span Обязательное поле
             .ticket-form__row
-              select#category-field.form__select.js-multiple-select(name='category', data-label='Выбрать категорию публикации', multiple)
+              select#category-field.form__select.js-multiple-select(name='category[]', data-label='Выбрать категорию публикации', multiple)
                 each category in fields.allCategories
                   if fields && fields.hasOwnProperty(`category`) && fields.category.includes(`${category}`) 
                     option(value='Книги', selected='') #{category}
