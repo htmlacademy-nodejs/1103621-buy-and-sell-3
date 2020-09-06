@@ -5,6 +5,7 @@ const {
 } = require(`express`);
 const offersRouter = new Router();
 const fs = require(`fs`).promises;
+const formidable = require(`formidable`);
 
 const axios = require(`axios`);
 const PATH_TO_SERVICE = `http://localhost:3000`;
@@ -54,7 +55,9 @@ offersRouter.get(`/add`, async (req, res) => {
   }
 
   res.render(`tickets/new-ticket`, {
-    fields: {allCategories}
+    fields: {
+      allCategories
+    }
   });
 });
 
@@ -69,60 +72,69 @@ offersRouter.get(`/edit/:id`, async (req, res) => {
 
   res.render(`tickets/ticket-edit`, {
     offerForEditing,
-    fields: {allCategories}
+    fields: {
+      allCategories
+    }
   });
 });
 
 offersRouter.get(`/:id`, (req, res) => res.render(`tickets/ticket`));
-offersRouter.post(`/add`, async (req, res) => {
-  console.log(req.fields);
-
-  if (!allCategories) {
-    allCategories = await readContent(PATH_TO_CATEGORIES);
-  }
-
-  const allFields = Object.assign(req.fields, {
-    allCategories
+offersRouter.post(`/add`, (req, res) => {
+  const form = formidable({
+    encoding: `utf-8`,
+    uploadDir: `./tmp`,
+    multiples: true,
   });
 
-  const AVATARS_PATH = `src/express/public/upload/`;
-  const {
-    type,
-    size,
-    path,
-    name
-  } = req.files.avatar;
-  const allowTypes = [`image/jpeg`, `image/png`];
+  form.parse(req, async (err, fields, files) => {
+    console.log(fields);
 
-  if (size === 0 || !allowTypes.includes(type)) {
-    fs.unlink(path);
-    res.render(`tickets/new-ticket`, {
-      fields: allFields
+    if (!allCategories) {
+      allCategories = await readContent(PATH_TO_CATEGORIES);
+    }
+
+    const allFields = Object.assign(fields, {
+      allCategories
     });
 
-    return;
-  }
+    const AVATARS_PATH = `src/express/public/upload/`;
+    const {
+      type,
+      size,
+      path,
+      name
+    } = files.avatar;
+    const allowTypes = [`image/jpeg`, `image/png`];
 
-  try {
-    await fs.rename(path, AVATARS_PATH + name);
-  } catch (error) {
-    throw new Error(`Oops! Error: ${error.message}`);
-  }
+    if (size === 0 || !allowTypes.includes(type)) {
+      fs.unlink(path);
+      res.render(`tickets/new-ticket`, {
+        fields: allFields
+      });
 
-  const response = await postOffer(normalizeOffer({
-    fields: allFields,
-    picture: name
-  }));
+      return;
+    }
 
-  if (response.status === 201) {
-    res.redirect(`/my`);
-  } else {
-    res.render(`tickets/new-ticket`, {
+    try {
+      await fs.rename(path, AVATARS_PATH + name);
+    } catch (error) {
+      throw new Error(`Oops! Error: ${error.message}`);
+    }
+
+    const response = await postOffer(normalizeOffer({
       fields: allFields,
       picture: name
-    });
-  }
+    }));
 
+    if (response.status === 201) {
+      res.redirect(`/my`);
+    } else {
+      res.render(`tickets/new-ticket`, {
+        fields: allFields,
+        picture: name
+      });
+    }
+  });
 });
 
 module.exports = offersRouter;

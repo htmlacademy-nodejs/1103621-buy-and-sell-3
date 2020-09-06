@@ -2,7 +2,6 @@
 
 const express = require(`express`);
 const path = require(`path`);
-const formidableMiddleware = require(`express-formidable`);
 const PUBLIC_DIR = `public`;
 
 const mainRoutes = require(`./routes/main-routes`);
@@ -16,11 +15,6 @@ const app = express();
 app.set(`views`, path.resolve(__dirname, `templates`));
 app.set(`view engine`, `pug`);
 
-app.use(formidableMiddleware({
-  encoding: `utf-8`,
-  uploadDir: `./tmp`,
-  multiples: true,
-}));
 app.use(express.static(path.resolve(__dirname, PUBLIC_DIR)));
 
 app.use(`/my`, myRoutes);
