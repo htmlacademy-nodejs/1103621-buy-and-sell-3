@@ -78,7 +78,14 @@ offersRouter.get(`/edit/:id`, async (req, res) => {
   });
 });
 
-offersRouter.get(`/:id`, (req, res) => res.render(`tickets/ticket`));
+offersRouter.get(`/:id`, async (req, res) => {
+  const offer = await getOffer(req.params.id);
+  res.render(`tickets/ticket`, {
+    offer,
+  });
+});
+
+
 offersRouter.post(`/add`, (req, res) => {
   const form = formidable({
     encoding: `utf-8`,
@@ -97,7 +104,7 @@ offersRouter.post(`/add`, (req, res) => {
       allCategories
     });
 
-    const AVATARS_PATH = `src/express/public/upload/`;
+    const AVATARS_PATH = `src/express/public/img/`;
     const {
       type,
       size,
