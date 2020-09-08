@@ -14,10 +14,6 @@ const expressPinoLogger = require(`express-pino-logger`)({
   logger
 });
 
-const expressPinoLogger = require(`express-pino-logger`)({
-  logger
-});
-
 const DEFAULT_PORT = 3000;
 
 const app = express();
