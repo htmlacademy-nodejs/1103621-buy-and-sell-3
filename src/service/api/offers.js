@@ -8,6 +8,7 @@ const {
   commentValidator
 } = require(`../middlewares`);
 
+
 const route = new Router();
 
 module.exports = (app, offerService, commentService) => {
@@ -32,21 +33,28 @@ module.exports = (app, offerService, commentService) => {
       .json(newOffer);
   });
 
+
   route.put(`/:offerId`, [offerValidator, offerExists(offerService)], (req, res) => {
+
     const {offerId} = req.params;
 
     const updatedOffer = offerService.update(offerId, req.body);
 
+
     return res.status(HttpCode.OK)
+
       .json(updatedOffer);
   });
 
+
   route.delete(`/:offerId`, (req, res) => {
+
     const {offerId} = req.params;
     const deletedOffer = offerService.drop(offerId);
 
     if (!deletedOffer) {
       return res.status(HttpCode.NOT_FOUND)
+
         .send(`Offer with id ${offerId} is not found!`);
     }
 
@@ -62,6 +70,7 @@ module.exports = (app, offerService, commentService) => {
       .json(comments);
   });
 
+
   route.delete(`/:offerId/comments/:commentId`, offerExists(offerService), (req, res) => {
     const {offer} = res.locals;
     const {commentId} = req.params;
@@ -69,6 +78,7 @@ module.exports = (app, offerService, commentService) => {
 
     if (!deletedComment) {
       return res.status(HttpCode.NOT_FOUND)
+
         .send(`Comment with id ${commentId} is not found!`);
     }
 

@@ -10,6 +10,9 @@ const {
   getLogger
 } = require(`../../logger/logger`);
 const logger = getLogger();
+const expressPinoLogger = require(`express-pino-logger`)({
+  logger
+});
 
 const expressPinoLogger = require(`express-pino-logger`)({
   logger

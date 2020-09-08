@@ -13,6 +13,7 @@ module.exports = (app, service) => {
   app.use(`/categories`, router);
 
   router.get(`/`, (req, res) => {
+
     const categories = service.findAll();
 
     res.status(HttpCode.OK)
