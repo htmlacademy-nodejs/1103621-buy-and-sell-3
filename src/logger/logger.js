@@ -2,7 +2,8 @@
 
 const logger = require(`pino`)({
   name: `server`,
-  level: process.env.LOG_LEVEL || `info`
+  level: process.env.LOG_LEVEL || `info`,
+  prettyPrint: process.env.PRETTY_PRINT === `1` ? true : false,
 }, `./src/service/logs/logs.log`);
 
 module.exports = {
