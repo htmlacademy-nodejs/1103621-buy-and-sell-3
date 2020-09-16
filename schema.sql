@@ -17,11 +17,13 @@ DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
-	id BIGSERIAL NOT NULL PRIMARY KEY,
+	id BIGSERIAL NOT NULL,
+  email varchar(100) NOT NULL,
 	firstname VARCHAR(100) NOT NULL,
 	lastname VARCHAR(100) NOT NULL,
 	user_password varchar(100) NOT NULL,
-	avatar varchar(100) NOT NULL
+	avatar varchar(100) NOT NULL,
+  CONSTRAINT users_pk PRIMARY KEY (id, email)
 );
 
 CREATE TABLE types (
