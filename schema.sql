@@ -17,13 +17,12 @@ DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
-	id BIGSERIAL NOT NULL,
+	id BIGSERIAL NOT NULL PRIMARY KEY,
   email varchar(100) NOT NULL,
 	firstname VARCHAR(100) NOT NULL,
 	lastname VARCHAR(100) NOT NULL,
 	user_password varchar(100) NOT NULL,
-	avatar varchar(100) NOT NULL,
-  CONSTRAINT users_pk PRIMARY KEY (id, email)
+	avatar varchar(100) NOT NULL
 );
 
 CREATE TABLE types (
@@ -71,12 +70,3 @@ CREATE TABLE comments (
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
-
-
-
-
-
-
-
-
-
