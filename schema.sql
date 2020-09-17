@@ -34,10 +34,15 @@ CREATE TABLE tickets (
 	id BIGSERIAL NOT NULL PRIMARY KEY,
 	title varchar(100) NOT NULL,
 	descr varchar(1000) NOT NULL,
+  picture varchar(100) NOT NULL,
 	price INTEGER NOT NULL,
 	type_id INTEGER NOT NULL,
+  author_id BIGINT NOT NULL,
   FOREIGN KEY (type_id) REFERENCES types (id)
     ON DELETE SET NULL
+    ON UPDATE CASCADE,
+  FOREIGN KEY (author_id) REFERENCES users (id)
+    ON DELETE CASCADE
     ON UPDATE CASCADE
 );
 
