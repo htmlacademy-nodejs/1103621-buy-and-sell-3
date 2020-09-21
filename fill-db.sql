@@ -1,3 +1,5 @@
+SET client_encoding = 'UTF8';
+
 INSERT INTO users VALUES
 (DEFAULT, 'equnnepet-5704@gmail.com', 'Fred ', 'Anderson', 'bcR02bhrnpc9M2kfyyHe', 'avatar03.jpg'),
 (DEFAULT, 'equnnepet-5704@gmail.com', 'Lily', 'Hill', 'TPJZATj1iyQtN2h9TmMZ', 'avatar01.jpg');
