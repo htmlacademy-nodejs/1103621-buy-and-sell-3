@@ -200,7 +200,9 @@ const generateFillingCode = (parameters) => {
     sentences, titles, categories, comments} = parameters;
 
   const users = generateUsers(firstnames, lastnames, emails, passwords);
-  let content = getSqlForFillingUsersTable(users);
+  let content = `SET client_encoding = 'UTF8';\n\n`;
+
+  content += getSqlForFillingUsersTable(users);
 
   content += getSqlForFillingTypesTable();
 
