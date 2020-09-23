@@ -27,6 +27,8 @@ CREATE TABLE users (
 CREATE UNIQUE INDEX users_email_index ON users (email);
 CREATE INDEX users_firstname_index ON users (firstname);
 CREATE INDEX users_lastname_index ON users (lastname);
+CREATE INDEX users_user_password_index ON users (user_password);
+CREATE INDEX users_avatar_index ON users (avatar);
 
 CREATE TABLE types (
 	id SERIAL NOT NULL PRIMARY KEY,
@@ -50,8 +52,10 @@ CREATE TABLE tickets (
 );
 CREATE INDEX tickets_title_index ON tickets (title);
 CREATE INDEX tickets_descr_index ON tickets (descr);
+CREATE INDEX tickets_picture_index ON tickets (picture);
 CREATE INDEX tickets_price_index ON tickets (price);
 CREATE INDEX tickets_type_id_index ON tickets (type_id);
+CREATE INDEX tickets_author_id_index ON tickets (author_id);
 
 CREATE TABLE categories (
 	id BIGSERIAL NOT NULL PRIMARY KEY,
