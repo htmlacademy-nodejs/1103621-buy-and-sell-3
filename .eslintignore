@@ -1,2 +1,4 @@
 **/public/js**
 **/*.test.js
+/src/service/db/models/*.js
+fill-db.js

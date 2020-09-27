@@ -1,10 +1,16 @@
 'use strict';
 
-const {HttpCode} = require(`../../constants`);
+const {
+  HttpCode
+} = require(`../../constants`);
 
-module.exports = (service) => (req, res, next) => {
-  const {offerId} = req.params;
-  const offer = service.findOne(offerId);
+module.exports = (db) => async (req, res, next) => {
+  const {
+    offerId
+  } = req.params;
+  const offer = await db.models.Ticket.findByPk(offerId, {
+    include: [`author`, `type`, `categories`],
+  });
 
   if (!offer) {
     res.status(HttpCode.NOT_FOUND)

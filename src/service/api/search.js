@@ -2,10 +2,11 @@
 
 const {Router} = require(`express`);
 const {HttpCode} = require(`../../constants`);
+const Sequelize = require(`sequelize`);
 
 const router = new Router();
 
-module.exports = (app, service) => {
+module.exports = (app, db) => {
   app.use(`/search`, router);
 
   router.get(`/`, (req, res) => {
@@ -18,7 +19,15 @@ module.exports = (app, service) => {
       return;
     }
 
-    const searchResults = service.findAll(query);
+    const Operator = Sequelize.Op;
+    const searchResults = db.models.Ticket.findAll({
+      where: {
+        title: {
+          [Operator.iLike]: `%${query}`,
+        }
+      },
+      raw: true,
+    });
     const searchStatus = searchResults.length > 0 ? HttpCode.OK : HttpCode.NOT_FOUND;
 
     res.status(searchStatus)

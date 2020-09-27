@@ -24,8 +24,6 @@ const getEightRandomOffersForTheNewest = async () => {
 
 const getFourMostDiscussedOffers = async () => {
   const allOffers = await getAllOffers();
-  allOffers.sort((of1, of2) => of1.comments.length - of2.comments.length);
-
   return allOffers.slice(0, 4);
 };
 

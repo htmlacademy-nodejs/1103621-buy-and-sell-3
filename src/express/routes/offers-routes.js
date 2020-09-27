@@ -29,10 +29,10 @@ const normalizeOffer = ((bodyOffer) => {
   } = bodyOffer;
   return {
     title: fields[`ticket-name`],
-    description: fields.comment,
-    type: fields.action === `sell` ? `SALE` : `OFFER`,
-    category: fields.category,
-    sum: fields.price,
+    descr: fields.comment,
+    type: fields.action === `sell` ? `продам` : `куплю`,
+    categories: fields.category,
+    price: fields.price,
     picture
   };
 });

@@ -34,7 +34,8 @@
     "server": "nodemon ./src/service/service.js --server 3000",
     "start-front-server": "nodemon --inspect=9232 ./src/express/index.js",
     "generate-mocks": "node ./src/service/service.js --generate 10",
-    "generate-sql-mocks": "node ./src/service/service.js --fill 13"
+    "generate-sql-mocks": "node ./src/service/service.js --fill 13",
+    "generate-js-mocks": "node ./src/service/service.js --filldb 13"
   },
   "repository": {
     "type": "git",
