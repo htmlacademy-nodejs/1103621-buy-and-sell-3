@@ -22,7 +22,7 @@ SELECT
   categories.name AS "Name",
   count(tickets_categories.ticket_id)
 FROM categories
-INNER JOIN tickets_categories
+LEFT JOIN tickets_categories
   ON categories.id = tickets_categories.category_id
 GROUP BY 
   categories.id, categories.name
