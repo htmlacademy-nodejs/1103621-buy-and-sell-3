@@ -35,8 +35,8 @@ const CommentsRestrict = {
 };
 
 const OfferType = {
-  BUY: `BUY`,
-  SALE: `SALE`,
+  BUY: `куплю`,
+  SALE: `продам`,
 };
 
 const FILE_SENTENCES_PATH = `./data/sentences.txt`;
