@@ -11,6 +11,8 @@ const {
   offerExists,
   commentValidator
 } = require(`../middlewares`);
+const Sequelize = require(`sequelize`);
+const Operator = Sequelize.Op;
 
 
 const route = new Router();
@@ -19,6 +21,8 @@ module.exports = async (app, db) => {
   app.use(`/offers`, route);
 
   route.get(`/`, async (req, res) => {
+    const {amount, order} = req.query;
+
     const offers = await db.models.Ticket.findAll({
       include: [`author`, `type`, `categories`],
       order: [
@@ -26,6 +30,7 @@ module.exports = async (app, db) => {
       ],
       raw: true,
     });
+
     res.status(HttpCode.OK).json(offers);
   });
 
@@ -49,13 +54,13 @@ module.exports = async (app, db) => {
           name: req.body.type
         }
       }),
-      categories: await Promise.all(req.body.categories.map(async (category) => (
-        await db.models.Category.findAll({
-          where: {
-            name: category
+      categories: await db.models.Category.findAll({
+        where: {
+          name: {
+            [Operator.in]: req.body.categories
           }
-        })
-      ))),
+        }
+      }),
     }, {
       include: [{
         association: db.models.Type,
@@ -87,14 +92,13 @@ module.exports = async (app, db) => {
         },
         raw: true
       }),
-      categories: await Promise.all(req.body.categories.map(async (category) => (
-        await db.models.Category.findAll({
-          where: {
-            name: category
-          },
-          raw: true
-        })
-      ))),
+      categories: await db.models.Category.findAll({
+        where: {
+          name: {
+            [Operator.in]: req.body.categories
+          }
+        }
+      }),
     }, {
       where: {
         id: offerId

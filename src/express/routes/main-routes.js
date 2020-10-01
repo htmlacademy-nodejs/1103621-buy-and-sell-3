@@ -8,11 +8,25 @@ const axios = require(`axios`);
 const {
   shuffle
 } = require(`../../utils`);
+
 const PATH_TO_SERVICE = `http://localhost:3000`;
+const NUMBER_OF_OFFERS_FOR_THE_NEWEST = 8;
+const NUMBER_OF_OFFERS_FOR_THE_MOST_DESCUSSED = 4;
+const OrderType = {
+  NEWEST: `newest`,
+  MOSTDISCUSSED: `mostDiscussed`,
+};
+
 
 const getAllOffers = async () => {
   const serviceResp = await axios.get(`${PATH_TO_SERVICE}/api/offers`);
   return serviceResp.data;
+};
+
+const getOffers = async (amount, order) => {
+  const offers = await axios.get(`${PATH_TO_SERVICE}/api/offers?amount=${amount}&order=${order}`);
+
+  return offers;
 };
 
 const getEightRandomOffersForTheNewest = async () => {
@@ -38,8 +52,8 @@ const findOffersByQueryString = async (queryStr) => {
 };
 
 mainRouter.get(`/`, async (req, res) => {
-  const offersForTheNewest = await getEightRandomOffersForTheNewest();
-  const offersForTheMostDiscussed = await getFourMostDiscussedOffers();
+  const offersForTheNewest = await getOffers(NUMBER_OF_OFFERS_FOR_THE_NEWEST, OrderType.NEWEST);
+  const offersForTheMostDiscussed = await getOffers(NUMBER_OF_OFFERS_FOR_THE_MOST_DESCUSSED, OrderType.MOSTDISCUSSED);
   res.render(`main`, {
     offersForTheNewest,
     offersForTheMostDiscussed
