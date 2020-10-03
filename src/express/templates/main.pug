@@ -16,12 +16,12 @@ block content
                 img(src=`/img/${offer.picture}`, srcset=`/img/${offer.picture}`, alt='Изображение товара')
               .ticket-card__info
                 span.ticket-card__label
-                  if offer[`type.name`] == 'продам'
-                    | ПРОДАМ
-                  else
-                    | КУПЛЮ
+                  | #{offer.type.name}
                 .ticket-card__categories
-                  a(href='#') #{offer[`categories.name`]} 
+                  - var categories = [];
+                  each category in offer.categories 
+                    - categories.push(category.name)
+                  a(href='#') #{categories.join(`, `)} 
                 .ticket-card__header
                   h3.ticket-card__title
                     a(href=`/offers/${offer.id}`) #{offer.title}
@@ -42,12 +42,12 @@ block content
                 img(src=`/img/${offer.picture}`, srcset=`/img/${offer.picture}`, alt='Изображение товара')
               .ticket-card__info
                 span.ticket-card__label
-                  if offer[`type.name`] == 'продам'
-                    | ПРОДАМ
-                  else
-                    | КУПЛЮ
+                  | #{offer.type.name}
                 .ticket-card__categories
-                  a(href='#') #{offer[`categories.name`]} 
+                  - var categories = [];
+                  each category in offer.categories 
+                    - categories.push(category.name)
+                  a(href='#') #{categories.join(`, `)} 
                 .ticket-card__header
                   h3.ticket-card__title
                     a(href=`/offers/${offer.id}`) #{offer.title}

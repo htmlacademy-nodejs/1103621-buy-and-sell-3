@@ -9,16 +9,12 @@ const {
 
 const router = new Router();
 
-module.exports = (app, db) => {
+module.exports = (app, categoryService) => {
   app.use(`/categories`, router);
 
   router.get(`/`, async (req, res) => {
 
-    const categories = await db.models.Category.findAll();
-    const categoriesNames = [];
-    categories.forEach((category) => {
-      categoriesNames.push(category.name);
-    });
+    const categories = await categoryService.findAll();
 
     res.status(HttpCode.OK)
       .json(categories);

@@ -6,9 +6,9 @@ const {
 } = require(`sequelize`);
 
 module.exports = (sequelize) => {
-  class Ticket extends Model {}
+  class Offer extends Model {}
 
-  Ticket.init({
+  Offer.init({
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -36,13 +36,13 @@ module.exports = (sequelize) => {
     timestamps: true,
     paranoid: false,
     hooks: {
-      beforeValidate: (ticket, options) => {
-        if (!ticket.authorId) {
-          ticket.authorId = 1;
+      beforeValidate: (offer, options) => {
+        if (!offer.authorId) {
+          offer.authorId = 1;
         }
       }
     }
   });
 
-  return Ticket;
+  return Offer;
 };

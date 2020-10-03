@@ -18,9 +18,9 @@ const {
 const {
   users,
   types,
-  tickets,
+  offers,
   categories,
-  ticketsCategories,
+  offersCategories,
   comments,
 } = require(`../../../fill-db`);
 
@@ -30,39 +30,39 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
 });
 
 const User = require(`./models/user`)(sequelize);
-const Ticket = require(`./models/ticket`)(sequelize);
+const Offer = require(`./models/offer`)(sequelize);
 const Type = require(`./models/type`)(sequelize);
 const Comment = require(`./models/comment`)(sequelize);
 const Category = require(`./models/category`)(sequelize);
 
-User.hasMany(Ticket, {
-  as: `tickets`,
+User.hasMany(Offer, {
+  as: `offers`,
   foreignKey: `authorId`,
 });
 
-Ticket.belongsTo(User, {
+Offer.belongsTo(User, {
   as: `author`,
   foreignKey: `authorId`,
 });
 
-Type.hasMany(Ticket, {
-  as: `tickets`,
+Type.hasMany(Offer, {
+  as: `offers`,
   foreignKey: `typeId`
 });
 
-Ticket.belongsTo(Type, {
+Offer.belongsTo(Type, {
   as: `type`,
   foreignKey: `typeId`,
 });
 
-Ticket.hasMany(Comment, {
+Offer.hasMany(Comment, {
   as: `comments`,
-  foreignKey: `ticketId`,
+  foreignKey: `offerId`,
 });
 
-Comment.belongsTo(Ticket, {
-  as: `ticket`,
-  foreignKey: `ticketId`,
+Comment.belongsTo(Offer, {
+  as: `offer`,
+  foreignKey: `offerId`,
 });
 
 User.hasMany(Comment, {
@@ -75,20 +75,20 @@ Comment.belongsTo(User, {
   foreignKey: `authorId`,
 });
 
-const TicketsCategories = sequelize.define(`Tickets_Categories`, {}, {
+const OffersCategories = sequelize.define(`Offers_Categories`, {}, {
   timestamps: false,
   paranoid: false,
 });
 
-Ticket.belongsToMany(Category, {
-  through: TicketsCategories,
+Offer.belongsToMany(Category, {
+  through: OffersCategories,
   as: `categories`,
-  foreignKey: `ticketId`,
+  foreignKey: `offerId`,
 });
 
-Category.belongsToMany(Ticket, {
-  through: TicketsCategories,
-  as: `tickets`,
+Category.belongsToMany(Offer, {
+  through: OffersCategories,
+  as: `offers`,
   foreignKey: `categoryId`,
 });
 
@@ -111,8 +111,8 @@ const initDb = async () => {
   await User.bulkCreate(users);
   await Type.bulkCreate(types);
   await Category.bulkCreate(categories);
-  await Ticket.bulkCreate(tickets);
-  await TicketsCategories.bulkCreate(ticketsCategories);
+  await Offer.bulkCreate(offers);
+  await OffersCategories.bulkCreate(offersCategories);
   await Comment.bulkCreate(comments);
 
   logger.debug(`The stucture of the db is successfully created!`);
@@ -121,7 +121,7 @@ const initDb = async () => {
 module.exports = {
   models: {
     User,
-    Ticket,
+    Offer,
     Type,
     Comment,
     Category,

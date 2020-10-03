@@ -78,7 +78,7 @@ const getCodeForFillingUsers = (firstnames, lastnames, emails, passwords) => {
 
 const getPictureFileName = (number) => `item${number.toString().padStart(2, 0)}.jpg`;
 
-const generateTicket = (titles, sentences) => {
+const generateOffer = (titles, sentences) => {
   return {
     id: `DEFAULT`,
     descr: shuffle(sentences).slice(1, 5).join(` `),
@@ -89,38 +89,38 @@ const generateTicket = (titles, sentences) => {
   };
 };
 
-const getCodeForFillingTicketsTable = (
-    numberOfFirstUserTickets,
-    numberOfSecondUserTickets,
+const getCodeForFillingOffersTable = (
+    numberOfFirstUserOffers,
+    numberOfSecondUserOffers,
     titles, sentences) => {
 
-  let codeForFillingTicketsTable = `const tickets = [\n`;
+  let codeForFillingOffersTable = `const offers = [\n`;
 
-  for (let i = 0; i < numberOfFirstUserTickets; i++) {
-    const ticket = generateTicket(titles, sentences);
-    codeForFillingTicketsTable += `{
-  title: '${ticket.title}',
-  descr: '${ticket.descr}',
-  picture: '${ticket.picture}',
-  price: ${ticket.price},
-  typeId: ${ticket.typeId},
+  for (let i = 0; i < numberOfFirstUserOffers; i++) {
+    const offer = generateOffer(titles, sentences);
+    codeForFillingOffersTable += `{
+  title: '${offer.title}',
+  descr: '${offer.descr}',
+  picture: '${offer.picture}',
+  price: ${offer.price},
+  typeId: ${offer.typeId},
   authorId: 1,
 },\n`;
   }
 
-  for (let i = 0; i < numberOfSecondUserTickets; i++) {
-    const ticket = generateTicket(titles, sentences);
-    codeForFillingTicketsTable += `{
-  title: '${ticket.title}',
-  descr: '${ticket.descr}',
-  picture: '${ticket.picture}',
-  price: ${ticket.price},
-  typeId: ${ticket.typeId},
+  for (let i = 0; i < numberOfSecondUserOffers; i++) {
+    const offer = generateOffer(titles, sentences);
+    codeForFillingOffersTable += `{
+  title: '${offer.title}',
+  descr: '${offer.descr}',
+  picture: '${offer.picture}',
+  price: ${offer.price},
+  typeId: ${offer.typeId},
   authorId: 2,
 },\n`;
   }
 
-  return `${codeForFillingTicketsTable}];\n\n`;
+  return `${codeForFillingOffersTable}];\n\n`;
 };
 
 const getCodeForFillingTypesTable = () => {
@@ -149,7 +149,7 @@ const getCodeForFillingCategoriesTable = (categories) => {
 };
 
 let categoriesIdArray;
-const getCategoriesForTicket = (numberOfCategories) => {
+const getCategoriesForOffer = (numberOfCategories) => {
   if (!categoriesIdArray) {
     categoriesIdArray = [];
     for (let i = 1; i <= numberOfCategories; i++) {
@@ -160,27 +160,27 @@ const getCategoriesForTicket = (numberOfCategories) => {
   return shuffle(categoriesIdArray).slice(0, getRandomInt(1, 4));
 };
 
-const getCodeForFillingTicketsCategoriesTable = (numberOfTickets, numberOfCategories) => {
-  let ticketsCategoriesMap = new Map();
+const getCodeForFillingOffersCategoriesTable = (numberOfOffers, numberOfCategories) => {
+  let offersCategoriesMap = new Map();
 
-  for (let i = 1; i <= numberOfTickets; i++) {
-    ticketsCategoriesMap.set(i, getCategoriesForTicket(numberOfCategories));
+  for (let i = 1; i <= numberOfOffers; i++) {
+    offersCategoriesMap.set(i, getCategoriesForOffer(numberOfCategories));
   }
 
-  let codeForFillingTicketsCategoriesTable = `const ticketsCategories = [\n`;
-  ticketsCategoriesMap.forEach((value, key) => {
+  let codeForFillingOffersCategoriesTable = `const offersCategories = [\n`;
+  offersCategoriesMap.forEach((value, key) => {
     value.forEach((categoryId) => {
-      codeForFillingTicketsCategoriesTable += `{
-  ticketId: ${key},
+      codeForFillingOffersCategoriesTable += `{
+  offerId: ${key},
   categoryId: ${categoryId},
 },\n`;
     });
   });
 
-  return `${codeForFillingTicketsCategoriesTable}];\n\n`;
+  return `${codeForFillingOffersCategoriesTable}];\n\n`;
 };
 
-const getCommentsForTicket = (comments) => {
+const getCommentsForOffer = (comments) => {
   const numberOfComments = getRandomInt(CommentsRestrict.MIN, CommentsRestrict.MAX);
 
   let commentsObjectsArray = new Array(numberOfComments).fill({}).map(() => ({
@@ -193,20 +193,20 @@ const getCommentsForTicket = (comments) => {
   return commentsObjectsArray;
 };
 
-const getCodeForFillingCommentsTable = (comments, numberOfTickets) => {
-  let ticketsIdCommentsMap = new Map();
+const getCodeForFillingCommentsTable = (comments, numberOfOffers) => {
+  let offersIdCommentsMap = new Map();
 
-  for (let i = 1; i < numberOfTickets; i++) {
-    ticketsIdCommentsMap.set(i, getCommentsForTicket(comments));
+  for (let i = 1; i < numberOfOffers; i++) {
+    offersIdCommentsMap.set(i, getCommentsForOffer(comments));
   }
 
   let codeForFillingCommentsTable = `const comments = [\n`;
-  ticketsIdCommentsMap.forEach((value, key) => {
+  offersIdCommentsMap.forEach((value, key) => {
     value.forEach((comment) => {
       codeForFillingCommentsTable += `{
   content: '${comment.content}',
   authorId: ${comment.authorId},
-  ticketId: ${key},
+  offerId: ${key},
 },\n`;
     });
   });
@@ -224,24 +224,24 @@ const generateFillingCode = (parameters) => {
 
   content += getCodeForFillingTypesTable();
 
-  const numberOfFirstUserTickets = Math.floor(count / 2);
-  const numberOfSecondUserTickets = count - numberOfFirstUserTickets;
+  const numberOfFirstUserOffers = Math.floor(count / 2);
+  const numberOfSecondUserOffers = count - numberOfFirstUserOffers;
 
-  content += getCodeForFillingTicketsTable(numberOfFirstUserTickets, numberOfSecondUserTickets,
+  content += getCodeForFillingOffersTable(numberOfFirstUserOffers, numberOfSecondUserOffers,
       titles, sentences);
 
   content += getCodeForFillingCategoriesTable(categories);
 
-  content += getCodeForFillingTicketsCategoriesTable(count, categories.length);
+  content += getCodeForFillingOffersCategoriesTable(count, categories.length);
 
   content += getCodeForFillingCommentsTable(comments, count);
 
   content += `module.exports = {
   users,
   types,
-  tickets,
+  offers,
   categories,
-  ticketsCategories,
+  offersCategories,
   comments,
 };`;
 

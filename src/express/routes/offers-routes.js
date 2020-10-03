@@ -6,6 +6,7 @@ const {
 const offersRouter = new Router();
 const fs = require(`fs`).promises;
 const formidable = require(`formidable`);
+const moment = require(`moment`);
 
 const axios = require(`axios`);
 const PATH_TO_SERVICE = `http://localhost:3000`;
@@ -22,12 +23,17 @@ const postOffer = async (offer) => {
   return response;
 };
 
+const formatDate = (date) => {
+  return moment(date, moment.ISO_8601).format(`DD.MM.YYYY`);
+};
+
 const normalizeOffer = ((bodyOffer) => {
   const {
     fields,
     picture
   } = bodyOffer;
-  return {
+
+  const normilizedOffer = {
     title: fields[`ticket-name`],
     descr: fields.comment,
     type: fields.action === `sell` ? `продам` : `куплю`,
@@ -35,6 +41,8 @@ const normalizeOffer = ((bodyOffer) => {
     price: fields.price,
     picture
   };
+
+  return normilizedOffer;
 });
 
 const readContent = async (filePath) => {
@@ -80,6 +88,7 @@ offersRouter.get(`/edit/:id`, async (req, res) => {
 
 offersRouter.get(`/:id`, async (req, res) => {
   const offer = await getOffer(req.params.id);
+  offer.createdAt = formatDate(offer.createdAt);
   res.render(`tickets/ticket`, {
     offer,
   });

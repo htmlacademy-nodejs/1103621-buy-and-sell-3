@@ -11,30 +11,25 @@ const {
   offerExists,
   commentValidator
 } = require(`../middlewares`);
-const Sequelize = require(`sequelize`);
-const Operator = Sequelize.Op;
 
 
 const route = new Router();
 
-module.exports = async (app, db) => {
+module.exports = async (app, offerService, commentService) => {
   app.use(`/offers`, route);
 
   route.get(`/`, async (req, res) => {
-    const {amount, order} = req.query;
+    const {
+      amount,
+      order
+    } = req.query;
 
-    const offers = await db.models.Ticket.findAll({
-      include: [`author`, `type`, `categories`],
-      order: [
-        [`createdAt`, `DESC`]
-      ],
-      raw: true,
-    });
+    const offers = await offerService.findAll(amount, order);
 
     res.status(HttpCode.OK).json(offers);
   });
 
-  route.get(`/:offerId`, offerExists(db), (req, res) => {
+  route.get(`/:offerId`, offerExists(offerService), (req, res) => {
     const {
       offer
     } = res.locals;
@@ -44,74 +39,25 @@ module.exports = async (app, db) => {
   });
 
   route.post(`/`, offerValidator, async (req, res) => {
-    const newOffer = await db.models.Ticket.create({
-      title: req.body.title,
-      descr: req.body.descr,
-      picture: req.body.picture,
-      price: req.body.price,
-      type: await db.models.Type.findAll({
-        where: {
-          name: req.body.type
-        }
-      }),
-      categories: await db.models.Category.findAll({
-        where: {
-          name: {
-            [Operator.in]: req.body.categories
-          }
-        }
-      }),
-    }, {
-      include: [{
-        association: db.models.Type,
-        as: `type`,
-      }, {
-        association: db.models.Category,
-        as: `categories`,
-      }]
-    });
+    const offer = req.body;
+
+    const newOffer = await offerService.create(offer);
 
     return res.status(HttpCode.CREATED)
       .json(newOffer);
   });
 
 
-  route.put(`/:offerId`, [offerValidator, offerExists(db)], async (req, res) => {
+  route.put(`/:offerId`, [offerValidator, offerExists(offerService)], async (req, res) => {
     const {
       offerId
     } = req.params;
 
-    const updatedOffer = await db.models.Ticket.update({
-      title: req.body.title,
-      descr: req.body.descr,
-      picture: req.body.picture,
-      price: req.body.price,
-      type: await db.models.Type.findAll({
-        where: {
-          name: req.body.type
-        },
-        raw: true
-      }),
-      categories: await db.models.Category.findAll({
-        where: {
-          name: {
-            [Operator.in]: req.body.categories
-          }
-        }
-      }),
-    }, {
-      where: {
-        id: offerId
-      },
-      include: [{
-        association: db.models.Type,
-        as: `type`,
-      }, {
-        association: db.models.Category,
-        as: `categories`,
-      }],
-      returning: true
-    })[1].dataValues[0];
+    const {
+      offer
+    } = req.body;
+
+    const updatedOffer = await offerService.update(offerId, offer);
 
 
     return res.status(HttpCode.OK)
@@ -123,12 +69,7 @@ module.exports = async (app, db) => {
     const {
       offerId
     } = req.params;
-    const deletedOffer = await db.models.Ticket.findByPk(offerId);
-    await await db.models.Ticket.destroy({
-      where: {
-        id: offerId,
-      }
-    });
+    const deletedOffer = await offerService.drop(offerId);
 
     if (!deletedOffer) {
       return res.status(HttpCode.NOT_FOUND)
@@ -139,28 +80,27 @@ module.exports = async (app, db) => {
       .json(deletedOffer);
   });
 
-  route.get(`/:offerId/comments`, offerExists(db), async (req, res) => {
+  route.get(`/:offerId/comments`, offerExists(offerService), async (req, res) => {
     const {
       offer
     } = res.locals;
-    const comments = await offer.getComments({
-      raw: true
-    });
+
+    const comments = await commentService.findAll(offer);
 
     return res.status(HttpCode.OK)
       .json(comments);
   });
 
 
-  route.delete(`/:offerId/comments/:commentId`, offerExists(db), async (req, res) => {
+  route.delete(`/:offerId/comments/:commentId`, offerExists(offerService), async (req, res) => {
     const {
       offer
     } = res.locals;
     const {
       commentId
     } = req.params;
-    const deletedComment = await db.models.Comment.findByPk(commentId);
-    await offer.removeComment(deletedComment);
+
+    const deletedComment = await commentService.drop(offer, commentId);
 
     if (!deletedComment) {
       return res.status(HttpCode.NOT_FOUND)
@@ -172,20 +112,16 @@ module.exports = async (app, db) => {
       .json(deletedComment);
   });
 
-  route.post(`/:offerId/comments`, [offerExists(db), commentValidator], async (req, res) => {
+  route.post(`/:offerId/comments`, [offerExists(offerExists), commentValidator], async (req, res) => {
     const {
       offer
     } = res.locals;
 
-    const newComment = await db.models.Comment.create({
-      content: req.body.text.create,
-      ticketId: offer
-    }, {
-      include: {
-        association: db.models.Ticket,
-        as: `ticket`,
-      }
-    });
+    const {
+      comment
+    } = req.body;
+
+    const newComment = await commentService.create(offer, comment);
 
     return res.status(HttpCode.CREATED)
       .json(newComment);
