@@ -36,10 +36,10 @@ class OfferService {
       categories,
     }, {
       include: [{
-        association: this._db.models.Type,
+        model: this._db.models.Type,
         as: `type`,
       }, {
-        association: this._db.models.Category,
+        model: this._db.models.Category,
         as: `categories`,
       }]
     });
@@ -127,10 +127,10 @@ class OfferService {
         id
       },
       include: [{
-        association: this._db.models.Type,
+        model: this._db.models.Type,
         as: `type`,
       }, {
-        association: this._db.models.Category,
+        model: this._db.models.Category,
         as: `categories`,
       }],
       returning: true

@@ -12,9 +12,10 @@ class SearchService {
     const searchResults = await this._db.models.Offer.findAll({
       where: {
         title: {
-          [Operator.iLike]: `${searchText}%`,
+          [Operator.iLike]: `%${searchText}%`,
         }
       },
+      include: [`type`],
     });
 
     return searchResults;
