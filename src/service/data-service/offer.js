@@ -9,22 +9,20 @@ class OfferService {
   }
 
   async create(offer) {
-    let type = await this._db.models.Type.findAll({
+    let type = await this._db.models.Type.findOne({
       where: {
         name: offer.type
-      },
-      raw: true
+      }
     });
 
-    type = type[0];
+    // type = type[0];
 
     const categories = await this._db.models.Category.findAll({
       where: {
         name: {
           [Operator.in]: offer.categories
         }
-      },
-      raw: true
+      }
     });
 
     const newOffer = await this._db.models.Offer.create({
@@ -32,17 +30,12 @@ class OfferService {
       descr: offer.descr,
       picture: offer.picture,
       price: offer.price,
-      type,
-      categories,
-    }, {
-      include: [{
-        model: this._db.models.Type,
-        as: `type`,
-      }, {
-        model: this._db.models.Category,
-        as: `categories`,
-      }]
+      // type,
+      // categories,
     });
+
+    await newOffer.addCategories(categories);
+    await newOffer.setType(type);
 
     return newOffer;
   }

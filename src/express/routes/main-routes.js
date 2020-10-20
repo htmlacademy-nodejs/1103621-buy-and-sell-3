@@ -42,9 +42,11 @@ mainRouter.get(`/`, async (req, res) => {
 mainRouter.get(`/register`, (req, res) => res.render(`sign-up`));
 mainRouter.get(`/login`, (req, res) => res.render(`login`));
 mainRouter.get(`/search`, async (req, res) => {
+  const offersForTheNewest = await getOffers(NUMBER_OF_OFFERS_FOR_THE_NEWEST, OrderType.NEWEST);
   const offers = await findOffersByQueryString(req.query.search);
   res.render(`search-result`, {
-    offers
+    offers,
+    offersForTheNewest: offersForTheNewest.data,
   });
 
 });

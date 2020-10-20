@@ -15,7 +15,7 @@ class SearchService {
           [Operator.iLike]: `%${searchText}%`,
         }
       },
-      include: [`type`],
+      include: [`author`, `type`, `categories`, `comments`],
     });
 
     return searchResults;
