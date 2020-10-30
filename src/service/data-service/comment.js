@@ -8,13 +8,9 @@ class CommentService {
   async create(offer, comment) {
     const newComment = await this._db.models.Comment.create({
       content: comment.text,
-      offer,
-    }, {
-      include: {
-        association: this._db.models.Offer,
-        as: `offer`,
-      }
     });
+
+    offer.addComment(newComment);
 
     return newComment;
   }

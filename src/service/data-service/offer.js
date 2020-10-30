@@ -90,7 +90,7 @@ class OfferService {
       }],
     });
 
-    return offer.dataValues;
+    return offer;
   }
 
   async update(id, offer) {
@@ -127,9 +127,9 @@ class OfferService {
         as: `categories`,
       }],
       returning: true
-    })[1].dataValues[0];
+    });
 
-    return updatedOffer;
+    return updatedOffer[1];
   }
 }
 

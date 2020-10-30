@@ -18,10 +18,7 @@ block content
                 span.ticket-card__label
                   | #{offer.type.name}
                 .ticket-card__categories
-                  - var categories = [];
-                  each category in offer.categories 
-                    - categories.push(category.name)
-                  a(href='#') #{categories.join(`, `)} 
+                  a(href='#') #{offer.categories.map((category) => (category.name)).join(`, `)} 
                 .ticket-card__header
                   h3.ticket-card__title
                     a(href=`/offers/${offer.id}`) #{offer.title}
@@ -44,10 +41,7 @@ block content
                 span.ticket-card__label
                   | #{offer.type.name}
                 .ticket-card__categories
-                  - var categories = [];
-                  each category in offer.categories 
-                    - categories.push(category.name)
-                  a(href='#') #{categories.join(`, `)} 
+                  a(href='#') #{offer.categories.map((category) => (category.name)).join(`, `)} 
                 .ticket-card__header
                   h3.ticket-card__title
                     a(href=`/offers/${offer.id}`) #{offer.title}

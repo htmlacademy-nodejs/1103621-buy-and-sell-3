@@ -11,6 +11,8 @@ Thumbs.db
 *.log*
 mocks.json
 node_modules/
+tmp/
+src/express/public/img/
 
 # Папка с собранными файлами проекта
 build/
