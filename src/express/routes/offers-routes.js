@@ -12,6 +12,18 @@ const axios = require(`axios`);
 const PATH_TO_SERVICE = `http://localhost:3000`;
 const PATH_TO_CATEGORIES = `./data/categories.txt`;
 
+const getCategories = async (oneOfferMin) => {
+  const categories = await axios.get(`${PATH_TO_SERVICE}/api/categories?oneOfferMin=${oneOfferMin}`);
+
+  return categories;
+};
+
+const getCategory = async (id) => {
+  const category = await axios.get(`${PATH_TO_SERVICE}/api/categories/${id}`);
+
+  return category;
+};
+
 const getOffer = async (id) => {
   const response = await axios.get(`${PATH_TO_SERVICE}/api/offers/${id}`);
   return response.data;
@@ -56,7 +68,20 @@ const readContent = async (filePath) => {
 
 let allCategories;
 
-offersRouter.get(`/category/:id`, (req, res) => res.render(`category`));
+offersRouter.get(`/category/:id`, async (req, res) => {
+  const {
+    id
+  } = req.params;
+
+  const oneOfferMin = true;
+  const topCategories = await getCategories(oneOfferMin);
+  const category = await getCategory(id);
+
+  res.render(`category`, {
+    topCategories: topCategories.data,
+    category: category.data,
+  });
+});
 offersRouter.get(`/add`, async (req, res) => {
   if (!allCategories) {
     allCategories = await readContent(PATH_TO_CATEGORIES);

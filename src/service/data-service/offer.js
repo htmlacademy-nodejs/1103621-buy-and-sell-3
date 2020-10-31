@@ -15,7 +15,6 @@ class OfferService {
       }
     });
 
-    // type = type[0];
 
     const categories = await this._db.models.Category.findAll({
       where: {
@@ -30,8 +29,6 @@ class OfferService {
       descr: offer.descr,
       picture: offer.picture,
       price: offer.price,
-      // type,
-      // categories,
     });
 
     await newOffer.addCategories(categories);

@@ -6,6 +6,9 @@ const {
 const {
   HttpCode
 } = require(`../../constants`);
+const {
+  categoryExists
+} = require(`../middlewares`);
 
 const router = new Router();
 
@@ -13,10 +16,24 @@ module.exports = (app, categoryService) => {
   app.use(`/categories`, router);
 
   router.get(`/`, async (req, res) => {
+    const {oneOfferMin} = req.query;
 
-    const categories = await categoryService.findAll();
+    const categories = await categoryService.findAll(oneOfferMin);
 
     res.status(HttpCode.OK)
       .json(categories);
+  });
+
+  router.get(`/:categoryId/`, categoryExists(categoryService), async (req, res) => {
+    const {
+      categoryId
+    } = req.params;
+
+    const withOffers = true;
+
+    const category = await categoryService.findOne(categoryId, withOffers);
+
+    return res.status(HttpCode.OK)
+      .json(category);
   });
 };
