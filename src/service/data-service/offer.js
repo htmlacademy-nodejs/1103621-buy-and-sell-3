@@ -1,43 +1,135 @@
 'use strict';
 
-const {nanoid} = require(`nanoid`);
-const {MAX_ID_LENGTH} = require(`../../constants`);
+const Sequelize = require(`sequelize`);
+const Operator = Sequelize.Op;
 
 class OfferService {
-  constructor(offers) {
-    this._offers = offers;
+  constructor(db) {
+    this._db = db;
   }
 
-  create(offer) {
-    const newOffer = Object.assign({id: nanoid(MAX_ID_LENGTH), comments: []}, offer);
+  async create(offer) {
+    let type = await this._db.models.Type.findOne({
+      where: {
+        name: offer.type
+      }
+    });
 
-    this._offers.push(newOffer);
+    // type = type[0];
+
+    const categories = await this._db.models.Category.findAll({
+      where: {
+        name: {
+          [Operator.in]: offer.categories
+        }
+      }
+    });
+
+    const newOffer = await this._db.models.Offer.create({
+      title: offer.title,
+      descr: offer.descr,
+      picture: offer.picture,
+      price: offer.price,
+      // type,
+      // categories,
+    });
+
+    await newOffer.addCategories(categories);
+    await newOffer.setType(type);
+
     return newOffer;
   }
 
-  drop(id) {
-    const offer = this._offers.find((item) => item.id === id);
+  async drop(id) {
+    const deletedOffer = await this._db.models.Offer.findByPk(id);
+    await await this._db.models.Offer.destroy({
+      where: {
+        id,
+      }
+    });
 
-    if (!offer) {
-      return null;
+    return deletedOffer;
+  }
+
+  async findAll(amount, order) {
+    let orderValue = [];
+    switch (order) {
+      case `newest`:
+        orderValue.push([`createdAt`, `DESC`]);
+        break;
+      case `mostDiscussed`:
+        orderValue.push([this._db.sequelize.literal(`"numberOfComments"`), `DESC`]);
+        break;
     }
+    const offers = await this._db.models.Offer.findAll({
+      attributes: {
+        include: [
+          [this._db.sequelize.literal(`(
+            SELECT COUNT(*)
+            FROM "Comments" AS comment
+            WHERE
+                comment."offerId" = "Offer".id
+        )`), `numberOfComments`
+          ]
+        ]
+      },
+      include: [`author`, `type`, `categories`, `comments`],
+      order: orderValue,
+      limit: amount,
+    });
 
-    this._offers = this._offers.filter((item) => item.id !== id);
+    return offers;
+  }
+
+  async findOne(id) {
+    const offer = await this._db.models.Offer.findByPk(id, {
+      include: [`author`, `type`, `categories`, {
+        model: this._db.models.Comment,
+        as: `comments`,
+        include: [`author`],
+      }],
+    });
+
     return offer;
   }
 
-  findAll() {
-    return this._offers;
-  }
+  async update(id, offer) {
+    const type = await this._db.models.Type.findAll({
+      where: {
+        name: offer.type
+      },
+    });
 
-  findOne(id) {
-    return this._offers.find((item) => item.id === id);
-  }
+    const categories = await this._db.models.Category.findAll({
+      where: {
+        name: {
+          [Operator.in]: offer.categories
+        }
+      }
+    });
 
-  update(id, offer) {
-    const oldOffer = this._offers.find((item) => item.id === id);
+    const updatedOffer = await this._db.models.Offer.update({
+      title: offer.title,
+      descr: offer.descr,
+      picture: offer.picture,
+      price: offer.price,
+      type,
+      categories,
+    }, {
+      where: {
+        id
+      },
+      include: [{
+        model: this._db.models.Type,
+        as: `type`,
+      }, {
+        model: this._db.models.Category,
+        as: `categories`,
+      }],
+      returning: true
+    });
 
-    return Object.assign(oldOffer, offer);
+    return updatedOffer[1];
   }
 }
 

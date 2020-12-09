@@ -16,20 +16,16 @@ block content
                 img(src=`/img/${offer.picture}`, srcset=`/img/${offer.picture}`, alt='Изображение товара')
               .ticket-card__info
                 span.ticket-card__label
-                  if offer.type == 'SALE'
-                    | ПРОДАМ
-                  else
-                    | КУПЛЮ
+                  | #{offer.type.name}
                 .ticket-card__categories
-                  a(href='#') 
-                    = offer.category.join(', ')
+                  a(href='#') #{offer.categories.map((category) => (category.name)).join(`, `)} 
                 .ticket-card__header
                   h3.ticket-card__title
                     a(href=`/offers/${offer.id}`) #{offer.title}
                   p.ticket-card__price
-                    span.js-sum #{offer.sum} ₽
+                    span.js-sum #{offer.price} ₽
                 .ticket-card__desc
-                  p #{offer.description}
+                  p #{offer.descr}
   section.tickets-list
     h2.visually-hidden Самые обсуждаемые предложения
     .tickets-list__wrapper
@@ -43,18 +39,14 @@ block content
                 img(src=`/img/${offer.picture}`, srcset=`/img/${offer.picture}`, alt='Изображение товара')
               .ticket-card__info
                 span.ticket-card__label
-                  if offer.type == 'SALE'
-                    | ПРОДАМ
-                  else
-                    | КУПЛЮ
+                  | #{offer.type.name}
                 .ticket-card__categories
-                  a(href='#') 
-                    = offer.category.join(', ')
+                  a(href='#') #{offer.categories.map((category) => (category.name)).join(`, `)} 
                 .ticket-card__header
                   h3.ticket-card__title
                     a(href=`/offers/${offer.id}`) #{offer.title}
                   p.ticket-card__price
-                    span.js-sum #{offer.sum} ₽
+                    span.js-sum #{offer.price} ₽
                 .ticket-card__desc
-                  p #{offer.description}
+                  p #{offer.descr}
 

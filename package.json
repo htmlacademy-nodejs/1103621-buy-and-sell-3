@@ -6,10 +6,12 @@
   "dependencies": {
     "axios": "0.20.0",
     "cross-env": "7.0.2",
+    "dotenv": "8.2.0",
     "express": "4.17.1",
     "express-formidable": "1.2.0",
     "express-pino-logger": "5.0.0",
     "formidable": "2.0.0-canary.20200504.1",
+    "moment": "2.29.0",
     "nanoid": "3.1.12",
     "pg": "8.3.3",
     "pino": "6.5.1",
@@ -17,7 +19,6 @@
     "sequelize": "6.3.5"
   },
   "devDependencies": {
-    "dotenv": "8.2.0",
     "eslint": "7.6.0",
     "eslint-config-htmlacademy": "0.5.2",
     "jest": "26.4.1",
@@ -34,7 +35,8 @@
     "server": "nodemon ./src/service/service.js --server 3000",
     "start-front-server": "nodemon --inspect=9232 ./src/express/index.js",
     "generate-mocks": "node ./src/service/service.js --generate 10",
-    "generate-sql-mocks": "node ./src/service/service.js --fill 13"
+    "generate-sql-mocks": "node ./src/service/service.js --fill 13",
+    "generate-js-mocks": "node ./src/service/service.js --filldb 13"
   },
   "repository": {
     "type": "git",

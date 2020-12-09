@@ -1,12 +1,24 @@
 'use strict';
 
+const Sequelize = require(`sequelize`);
+
 class SearchService {
-  constructor(offers) {
-    this._offers = offers;
+  constructor(db) {
+    this._db = db;
   }
 
-  findAll(searchText) {
-    return this._offers.filter((offer) => offer.title.includes(searchText));
+  async findAll(searchText) {
+    const Operator = Sequelize.Op;
+    const searchResults = await this._db.models.Offer.findAll({
+      where: {
+        title: {
+          [Operator.iLike]: `%${searchText}%`,
+        }
+      },
+      include: [`author`, `type`, `categories`, `comments`],
+    });
+
+    return searchResults;
   }
 }
 

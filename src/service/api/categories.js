@@ -9,12 +9,12 @@ const {
 
 const router = new Router();
 
-module.exports = (app, service) => {
+module.exports = (app, categoryService) => {
   app.use(`/categories`, router);
 
-  router.get(`/`, (req, res) => {
+  router.get(`/`, async (req, res) => {
 
-    const categories = service.findAll();
+    const categories = await categoryService.findAll();
 
     res.status(HttpCode.OK)
       .json(categories);
