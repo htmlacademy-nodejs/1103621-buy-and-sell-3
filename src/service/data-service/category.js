@@ -10,21 +10,21 @@ class CategoryService {
   async findAll(oneOfferMin) {
     let categories;
     if (oneOfferMin) {
-      const sql = `SELECT 
+      const sql = `SELECT
       "Categories".id,
       "Categories".name AS "name",
       count("Offers_Categories"."offerId") as "numberOfOffers"
     FROM "Categories"
     INNER JOIN "Offers_Categories"
       ON "Categories".id = "Offers_Categories"."categoryId"
-    GROUP BY 
+    GROUP BY
       "Categories".id, "Categories".name
-    HAVING 
+    HAVING
       count("Offers_Categories"."offerId") >= 1`;
 
       const type = sequelize.QueryTypes.SELECT;
       categories = await this._db.sequelize.query(sql, {
-        type
+        type,
       });
     } else {
       categories = this._db.models.Category.findAll();
@@ -33,18 +33,13 @@ class CategoryService {
     return categories;
   }
 
-  async findOne(categoryId, withOffers) {
-    let category;
-    if (withOffers) {
-      category = await this._db.models.Category.findByPk(categoryId, {
-        include: [{
-          association: `offers`,
-          include: [`type`, `categories`],
-        }]
-      });
-    } else {
-      category = await this._db.models.Category.findByPk(categoryId);
-    }
+  async findOne(categoryId) {
+    const category = await this._db.models.Category.findByPk(categoryId, {
+      include: [{
+        association: `offers`,
+        include: [`type`, `categories`],
+      }],
+    });
 
     return category;
   }
