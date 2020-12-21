@@ -1,7 +1,7 @@
 'use strict';
 
 const Sequelize = require(`sequelize`);
-const Operator = Sequelize.Op;
+const Op = Sequelize.Op;
 
 class OfferService {
   constructor(db) {
@@ -19,7 +19,7 @@ class OfferService {
     const categories = await this._db.models.Category.findAll({
       where: {
         name: {
-          [Operator.in]: offer.categories
+          [Op.in]: offer.categories
         }
       }
     });
@@ -39,7 +39,7 @@ class OfferService {
 
   async drop(id) {
     const deletedOffer = await this._db.models.Offer.findByPk(id);
-    await await this._db.models.Offer.destroy({
+    await this._db.models.Offer.destroy({
       where: {
         id,
       }
@@ -48,7 +48,40 @@ class OfferService {
     return deletedOffer;
   }
 
-  async findAll(amount, order) {
+  async findAll({limit, offset, order, justCount, isPagination, categoryId}) {
+    if (justCount) {
+      const count = await this._db.models.Offer.count({
+        include: [{
+          association: `categories`,
+          where: {
+            id: categoryId
+          }
+        }]
+      });
+      return count;
+    }
+
+    if (isPagination) {
+      const category = await this._db.models.Category.findByPk(categoryId);
+      const offers = await category.getOffers({
+        limit,
+        offset,
+        include: [`author`, `type`, `categories`, `comments`],
+      });
+      // const offers = await this._db.models.Offer.findAll({
+      //   limit,
+      //   offset,
+      //   include: [{
+      //     association: `categories`,
+      //     where: {
+      //       id: categoryId
+      //     }
+      //   }]
+      // });
+
+      return offers;
+    }
+
     let orderValue = [];
     switch (order) {
       case `newest`:
@@ -72,7 +105,7 @@ class OfferService {
       },
       include: [`author`, `type`, `categories`, `comments`],
       order: orderValue,
-      limit: amount,
+      limit,
     });
 
     return offers;
@@ -81,8 +114,7 @@ class OfferService {
   async findOne(id) {
     const offer = await this._db.models.Offer.findByPk(id, {
       include: [`author`, `type`, `categories`, {
-        model: this._db.models.Comment,
-        as: `comments`,
+        association: `comments`,
         include: [`author`],
       }],
     });
@@ -100,7 +132,7 @@ class OfferService {
     const categories = await this._db.models.Category.findAll({
       where: {
         name: {
-          [Operator.in]: offer.categories
+          [Op.in]: offer.categories
         }
       }
     });
@@ -116,13 +148,7 @@ class OfferService {
       where: {
         id
       },
-      include: [{
-        model: this._db.models.Type,
-        as: `type`,
-      }, {
-        model: this._db.models.Category,
-        as: `categories`,
-      }],
+      include: [`type`, `categories`],
       returning: true
     });
 

@@ -29,9 +29,12 @@ module.exports = (app, categoryService) => {
       categoryId
     } = req.params;
 
-    const withOffers = true;
+    const {
+      limit,
+      offset
+    } = req.query;
 
-    const category = await categoryService.findOne(categoryId, withOffers);
+    const category = await categoryService.findOne(categoryId, limit, offset);
 
     return res.status(HttpCode.OK)
       .json(category);

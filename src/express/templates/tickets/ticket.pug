@@ -1,6 +1,6 @@
-extends ../layout.pug 
+extends ../layout.pug
 
-block content 
+block content
   main.page-content
   section.ticket
     .ticket__wrapper
@@ -12,8 +12,8 @@ block content
           h2.ticket__title #{offer.title}
           .ticket__header
             p.ticket__price
-              span.js-sum #{offer.price} ₽
-            p.ticket__action 
+              span.js-sum #{offer.price} ₴
+            p.ticket__action
               | #{offer.type.name}
           .ticket__desc
             p #{offer.descr}

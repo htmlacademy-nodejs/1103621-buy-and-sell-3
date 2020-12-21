@@ -1,4 +1,4 @@
-extends layout.pug 
+extends layout.pug
 
 block content
   main.page-content
@@ -8,10 +8,10 @@ block content
     .tickets-list__wrapper
       .tickets-list__header
         p.tickets-list__title
-          | #{category.name} 
-          b.js-qty #{category.offers.length}
+          | #{`${category.name} `}
+          b.js-qty #{numberOfOffers}
       ul
-        each offer, i in category.offers
+        each offer, i in offers
           li.tickets-list__item
             div(class=`ticket-card ticket-card--color0${i}`)
               .ticket-card__img
@@ -20,7 +20,7 @@ block content
                 span.ticket-card__label
                   | #{offer.type.name}
                 .ticket-card__categories
-                  a(href='#') #{offer.categories.map((category) => (category.name)).join(`, `)} 
+                  a(href='#') #{offer.categories.map((category) => (category.name)).join(`, `)}
                 .ticket-card__header
                   h3.ticket-card__title
                     a(href=`/offers/${offer.id}`) #{offer.title}
@@ -28,17 +28,15 @@ block content
                     span.js-sum #{offer.price} ₽
                 .ticket-card__desc
                   p #{offer.descr}
-      .tickets-list__pagination
-        ul.pagination
-          li
-            a.active(href='#') 1
-          li
-            a(href='#') 2
-          li
-            a(href='#') 3
-          li
-            a(href='#') 4
-          li
-            a(href='#') 5
-          li
-            a(href='#') дальше
+      if  numberOfOffers > 8
+        .tickets-list__pagination
+          ul.pagination
+            each num in paginationNumbersArray
+              li
+                if num == page
+                  a.active #{num}
+                else
+                  a(href=`/offers/category/${category.id}?page=${num}`) #{num}
+            li
+              if page < numberOfPages
+                a(href=`/offers/category/${category.id}?page=${page + 1}`) дальше

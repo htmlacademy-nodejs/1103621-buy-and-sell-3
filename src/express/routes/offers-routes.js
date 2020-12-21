@@ -12,16 +12,28 @@ const axios = require(`axios`);
 const PATH_TO_SERVICE = `http://localhost:3000`;
 const PATH_TO_CATEGORIES = `./data/categories.txt`;
 
+const getNumberOfOffers = async (categoryId) => {
+  const count = await axios.get(`${PATH_TO_SERVICE}/api/offers?justCount=${true}&categoryId=${categoryId}`);
+
+  return count.data;
+};
+
+const getOffers = async (categoryId, limit, offset) => {
+  const offers = await axios.get(`${PATH_TO_SERVICE}/api/offers?isPagination=${true}&categoryId=${categoryId}&limit=${limit}&offset=${offset}`);
+
+  return offers.data;
+};
+
 const getCategories = async (oneOfferMin) => {
   const categories = await axios.get(`${PATH_TO_SERVICE}/api/categories?oneOfferMin=${oneOfferMin}`);
 
-  return categories;
+  return categories.data;
 };
 
 const getCategory = async (id) => {
   const category = await axios.get(`${PATH_TO_SERVICE}/api/categories/${id}`);
 
-  return category;
+  return category.data;
 };
 
 const getOffer = async (id) => {
@@ -68,18 +80,94 @@ const readContent = async (filePath) => {
 
 let allCategories;
 
+const getPaginationNumbersObj = (page, numberOfPages) => {
+  const paginationNumbersObj = {};
+  let paginationNumbersArray = [];
+
+  paginationNumbersObj.isValid = true;
+
+  if (page > numberOfPages) {
+    paginationNumbersObj.isValid = false;
+    return paginationNumbersObj;
+  }
+
+  if (page > 3) {
+    if (numberOfPages >= page + 2) {
+      for (let i = 2; i >= -2; i--) {
+        paginationNumbersArray.push(page - i);
+      }
+    } else {
+      const diff = numberOfPages - page;
+      switch (diff) {
+        case 0:
+          for (let i = 4; i >= 0; i--) {
+            const num = page - i;
+            if (num < 1) {
+              continue;
+            }
+            paginationNumbersArray.push(num);
+          }
+          break;
+        case 1:
+          for (let i = 3; i >= 0; i--) {
+            paginationNumbersArray.push(page - i);
+          }
+          paginationNumbersArray.push(page + 1);
+      }
+    }
+  } else {
+    for (let i = 1; i <= 5; i++) {
+      if (i > numberOfPages) {
+        break;
+      }
+      paginationNumbersArray.push(i);
+    }
+  }
+  paginationNumbersObj.array = paginationNumbersArray;
+  return paginationNumbersObj;
+};
+
 offersRouter.get(`/category/:id`, async (req, res) => {
   const {
     id
   } = req.params;
 
+  let {
+    page
+  } = req.query;
+
+  const DEFAULT_PAGE = 1;
+
+  if (!page) {
+    page = 1;
+  } else {
+    page = Number.parseInt(page, 10) || DEFAULT_PAGE;
+  }
+
+  const numberOfOffers = await getNumberOfOffers(id);
+  const MAX_OFFERS_PER_PAGE = 8;
+  const numberOfPages = Math.ceil(numberOfOffers / MAX_OFFERS_PER_PAGE);
+
+  const offset = MAX_OFFERS_PER_PAGE * page - MAX_OFFERS_PER_PAGE;
+  const offers = await getOffers(id, MAX_OFFERS_PER_PAGE, offset);
+
   const oneOfferMin = true;
   const topCategories = await getCategories(oneOfferMin);
   const category = await getCategory(id);
 
+  const paginationNumbersObj = getPaginationNumbersObj(page, numberOfPages);
+  if (!paginationNumbersObj.isValid) {
+    res.redirect(`/offers/category/${category.id}`);
+  }
+
   res.render(`category`, {
-    topCategories: topCategories.data,
-    category: category.data,
+    topCategories,
+    category,
+    offers,
+    numberOfPages,
+    page,
+    paginationNumbersArray: paginationNumbersObj.array,
+    numberOfOffers
   });
 });
 offersRouter.get(`/add`, async (req, res) => {

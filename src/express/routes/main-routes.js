@@ -20,8 +20,8 @@ const getCategories = async (oneOfferMin) => {
   return categories;
 };
 
-const getOffers = async (amount, order) => {
-  const offers = await axios.get(`${PATH_TO_SERVICE}/api/offers?amount=${amount}&order=${order}`);
+const getOffers = async (limit, order) => {
+  const offers = await axios.get(`${PATH_TO_SERVICE}/api/offers?amount=${limit}&order=${order}`);
 
   return offers;
 };

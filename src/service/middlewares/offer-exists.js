@@ -12,7 +12,7 @@ module.exports = (offerService) => async (req, res, next) => {
 
   if (!offer) {
     res.status(HttpCode.NOT_FOUND)
-      .send(`The ticket with the id ${offer} is not found`);
+      .send(`The ticket with the id ${offerId} is not found`);
     return;
   }
 

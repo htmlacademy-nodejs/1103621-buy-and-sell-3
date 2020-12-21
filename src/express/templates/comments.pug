@@ -1,6 +1,6 @@
-extends layout.pug 
+extends layout.pug
 
-block content 
+block content
   main.page-content
   section.comments
     .comments__wrapper
@@ -11,8 +11,8 @@ block content
             a.announce-card(href='#')
               h2.announce-card__title #{offer.title}
               span.announce-card__info
-                span.announce-card__price ₽ #{offer.sum}
-                span.announce-card__type 
+                span.announce-card__price ₴ #{offer.sum}
+                span.announce-card__type
                   if offer.type == 'SALE'
                     | ПРОДАМ
                   else

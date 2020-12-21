@@ -19,12 +19,7 @@ module.exports = async (app, offerService, commentService) => {
   app.use(`/offers`, route);
 
   route.get(`/`, async (req, res) => {
-    const {
-      amount,
-      order
-    } = req.query;
-
-    const offers = await offerService.findAll(amount, order);
+    const offers = await offerService.findAll(req.query);
 
     res.status(HttpCode.OK).json(offers);
   });
