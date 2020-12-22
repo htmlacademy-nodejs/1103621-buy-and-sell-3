@@ -14,8 +14,14 @@ const OrderType = {
   MOSTDISCUSSED: `mostDiscussed`,
 };
 
-const getOffers = async (amount, order) => {
-  const offers = await axios.get(`${PATH_TO_SERVICE}/api/offers?amount=${amount}&order=${order}`);
+const getCategories = async (oneOfferMin) => {
+  const categories = await axios.get(`${PATH_TO_SERVICE}/api/categories?oneOfferMin=${oneOfferMin}`);
+
+  return categories;
+};
+
+const getOffers = async (limit, order) => {
+  const offers = await axios.get(`${PATH_TO_SERVICE}/api/offers?limit=${limit}&order=${order}`);
 
   return offers;
 };
@@ -31,9 +37,12 @@ const findOffersByQueryString = async (queryStr) => {
 };
 
 mainRouter.get(`/`, async (req, res) => {
+  const oneOfferMin = true;
+  const topCategories = await getCategories(oneOfferMin);
   const offersForTheNewest = await getOffers(NUMBER_OF_OFFERS_FOR_THE_NEWEST, OrderType.NEWEST);
   const offersForTheMostDiscussed = await getOffers(NUMBER_OF_OFFERS_FOR_THE_MOST_DESCUSSED, OrderType.MOSTDISCUSSED);
   res.render(`main`, {
+    topCategories: topCategories.data,
     offersForTheNewest: offersForTheNewest.data,
     offersForTheMostDiscussed: offersForTheMostDiscussed.data
   });

@@ -125,6 +125,7 @@ module.exports = {
     Type,
     Comment,
     Category,
+    OffersCategories
   },
   initDb,
   connect,

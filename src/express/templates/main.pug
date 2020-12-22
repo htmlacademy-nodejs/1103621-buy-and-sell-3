@@ -8,7 +8,7 @@ block content
     .tickets-list__wrapper
       .tickets-list__header
         p.tickets-list__title Самое свежее
-      ul 
+      ul
         each offer, i in offersForTheNewest
           li.tickets-list__item
             div(class=`ticket-card ticket-card--color0${i}`)
@@ -18,12 +18,12 @@ block content
                 span.ticket-card__label
                   | #{offer.type.name}
                 .ticket-card__categories
-                  a(href='#') #{offer.categories.map((category) => (category.name)).join(`, `)} 
+                  a(href='#') #{offer.categories.map((category) => (category.name)).join(`, `)}
                 .ticket-card__header
                   h3.ticket-card__title
                     a(href=`/offers/${offer.id}`) #{offer.title}
                   p.ticket-card__price
-                    span.js-sum #{offer.price} ₽
+                    span.js-sum #{offer.price} ₴
                 .ticket-card__desc
                   p #{offer.descr}
   section.tickets-list
@@ -41,12 +41,12 @@ block content
                 span.ticket-card__label
                   | #{offer.type.name}
                 .ticket-card__categories
-                  a(href='#') #{offer.categories.map((category) => (category.name)).join(`, `)} 
+                  a(href='#') #{offer.categories.map((category) => (category.name)).join(`, `)}
                 .ticket-card__header
                   h3.ticket-card__title
                     a(href=`/offers/${offer.id}`) #{offer.title}
                   p.ticket-card__price
-                    span.js-sum #{offer.price} ₽
+                    span.js-sum #{offer.price} ₴
                 .ticket-card__desc
                   p #{offer.descr}
 

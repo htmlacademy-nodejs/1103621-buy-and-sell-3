@@ -12,6 +12,30 @@ const axios = require(`axios`);
 const PATH_TO_SERVICE = `http://localhost:3000`;
 const PATH_TO_CATEGORIES = `./data/categories.txt`;
 
+const getNumberOfOffers = async (categoryId) => {
+  const count = await axios.get(`${PATH_TO_SERVICE}/api/offers?justCount=${true}&categoryId=${categoryId}`);
+
+  return count.data;
+};
+
+const getOffers = async (categoryId, limit, offset) => {
+  const offers = await axios.get(`${PATH_TO_SERVICE}/api/offers?isPagination=${true}&categoryId=${categoryId}&limit=${limit}&offset=${offset}`);
+
+  return offers.data;
+};
+
+const getCategories = async (oneOfferMin) => {
+  const categories = await axios.get(`${PATH_TO_SERVICE}/api/categories?oneOfferMin=${oneOfferMin}`);
+
+  return categories.data;
+};
+
+const getCategory = async (id) => {
+  const category = await axios.get(`${PATH_TO_SERVICE}/api/categories/${id}`);
+
+  return category.data;
+};
+
 const getOffer = async (id) => {
   const response = await axios.get(`${PATH_TO_SERVICE}/api/offers/${id}`);
   return response.data;
@@ -56,7 +80,87 @@ const readContent = async (filePath) => {
 
 let allCategories;
 
-offersRouter.get(`/category/:id`, (req, res) => res.render(`category`));
+const getPaginationNumbersArray = (page, numberOfPages) => {
+  let paginationNumbersArray = [];
+
+  if (page > 3) {
+    if (numberOfPages >= page + 2) {
+      for (let i = 2; i >= -2; i--) {
+        paginationNumbersArray.push(page - i);
+      }
+    } else {
+      const diff = numberOfPages - page;
+      switch (diff) {
+        case 0:
+          for (let i = 4; i >= 0; i--) {
+            const num = page - i;
+            if (num < 1) {
+              continue;
+            }
+            paginationNumbersArray.push(num);
+          }
+          break;
+        case 1:
+          for (let i = 3; i >= 0; i--) {
+            paginationNumbersArray.push(page - i);
+          }
+          paginationNumbersArray.push(page + 1);
+      }
+    }
+  } else {
+    for (let i = 1; i <= 5; i++) {
+      if (i > numberOfPages) {
+        break;
+      }
+      paginationNumbersArray.push(i);
+    }
+  }
+  return paginationNumbersArray;
+};
+
+offersRouter.get(`/category/:id`, async (req, res) => {
+  const {
+    id
+  } = req.params;
+
+  let {
+    page
+  } = req.query;
+
+  const DEFAULT_PAGE = 1;
+
+  if (!page) {
+    page = 1;
+  } else {
+    page = Number.parseInt(page, 10) || DEFAULT_PAGE;
+  }
+
+  const numberOfOffers = await getNumberOfOffers(id);
+  const MAX_OFFERS_PER_PAGE = 8;
+  const numberOfPages = Math.ceil(numberOfOffers / MAX_OFFERS_PER_PAGE);
+
+  if (page > numberOfPages || page < 1) {
+    res.redirect(`/offers/category/${id}`);
+  }
+
+  const offset = MAX_OFFERS_PER_PAGE * page - MAX_OFFERS_PER_PAGE;
+  const offers = await getOffers(id, MAX_OFFERS_PER_PAGE, offset);
+
+  const oneOfferMin = true;
+  const topCategories = await getCategories(oneOfferMin);
+  const category = await getCategory(id);
+  const paginationNumbersArray = getPaginationNumbersArray(page, numberOfPages);
+
+  res.render(`category`, {
+    topCategories,
+    category,
+    offers,
+    numberOfPages,
+    page,
+    paginationNumbersArray,
+    numberOfOffers
+  });
+});
 offersRouter.get(`/add`, async (req, res) => {
   if (!allCategories) {
     allCategories = await readContent(PATH_TO_CATEGORIES);

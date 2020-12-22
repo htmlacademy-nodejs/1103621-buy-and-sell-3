@@ -1,13 +1,13 @@
-extends layout.pug 
+extends layout.pug
 
-block content 
+block content
   main.page-content
   section.search-results
     h1.visually-hidden Результаты поиска
     .search-results__wrapper
       if offers.length > 0
         p.search-results__label
-          | Найдено 
+          | Найдено
           span.js-results #{offers.length} публикации
         ul.search-results__list
           each offer, i in offers
@@ -19,20 +19,20 @@ block content
                   span.ticket-card__label
                     | #{offer.type.name}
                   .ticket-card__categories
-                    a(href='#') #{offer.categories.map((category) => (category.name)).join(`, `)} 
+                    a(href='#') #{offer.categories.map((category) => (category.name)).join(`, `)}
                   .ticket-card__header
                     h3.ticket-card__title
                       a(href=`/offers/${offer.id}`) #{offer.title}
                     p.ticket-card__price
-                      span.js-sum #{offer.price} ₽
+                      span.js-sum #{offer.price} ₴
                   .ticket-card__desc
                     p #{offer.descr}
-      else 
+      else
         .search-results__message
           p
-            | Не найдено 
+            | Не найдено
             br
-            | ни одной публикации       
+            | ни одной публикации
   section.tickets-list
     h2.visually-hidden Самые новые предложения
     .tickets-list__wrapper
@@ -49,11 +49,11 @@ block content
                 span.ticket-card__label
                   | #{offer.type.name}
                 .ticket-card__categories
-                  a(href='#') #{offer.categories.map((category) => (category.name)).join(`, `)} 
+                  a(href='#') #{offer.categories.map((category) => (category.name)).join(`, `)}
                 .ticket-card__header
                   h3.ticket-card__title
                     a(href=`/offers/${offer.id}`) #{offer.title}
                   p.ticket-card__price
-                    span.js-sum #{offer.price} ₽
+                    span.js-sum #{offer.price} ₴
                 .ticket-card__desc
                   p #{offer.descr}
