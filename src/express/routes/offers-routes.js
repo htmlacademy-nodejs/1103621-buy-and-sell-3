@@ -80,16 +80,8 @@ const readContent = async (filePath) => {
 
 let allCategories;
 
-const getPaginationNumbersObj = (page, numberOfPages) => {
-  const paginationNumbersObj = {};
+const getPaginationNumbersArray = (page, numberOfPages) => {
   let paginationNumbersArray = [];
-
-  paginationNumbersObj.isValid = true;
-
-  if (page > numberOfPages) {
-    paginationNumbersObj.isValid = false;
-    return paginationNumbersObj;
-  }
 
   if (page > 3) {
     if (numberOfPages >= page + 2) {
@@ -123,8 +115,7 @@ const getPaginationNumbersObj = (page, numberOfPages) => {
       paginationNumbersArray.push(i);
     }
   }
-  paginationNumbersObj.array = paginationNumbersArray;
-  return paginationNumbersObj;
+  return paginationNumbersArray;
 };
 
 offersRouter.get(`/category/:id`, async (req, res) => {
@@ -148,17 +139,17 @@ offersRouter.get(`/category/:id`, async (req, res) => {
   const MAX_OFFERS_PER_PAGE = 8;
   const numberOfPages = Math.ceil(numberOfOffers / MAX_OFFERS_PER_PAGE);
 
+  if (page > numberOfPages || page < 1) {
+    res.redirect(`/offers/category/${id}`);
+  }
+
   const offset = MAX_OFFERS_PER_PAGE * page - MAX_OFFERS_PER_PAGE;
   const offers = await getOffers(id, MAX_OFFERS_PER_PAGE, offset);
 
   const oneOfferMin = true;
   const topCategories = await getCategories(oneOfferMin);
   const category = await getCategory(id);
-
-  const paginationNumbersObj = getPaginationNumbersObj(page, numberOfPages);
-  if (!paginationNumbersObj.isValid) {
-    res.redirect(`/offers/category/${category.id}`);
-  }
+  const paginationNumbersArray = getPaginationNumbersArray(page, numberOfPages);
 
   res.render(`category`, {
     topCategories,
@@ -166,7 +157,7 @@ offersRouter.get(`/category/:id`, async (req, res) => {
     offers,
     numberOfPages,
     page,
-    paginationNumbersArray: paginationNumbersObj.array,
+    paginationNumbersArray,
     numberOfOffers
   });
 });
